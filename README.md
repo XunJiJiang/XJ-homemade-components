@@ -29,7 +29,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 当前仅支持
 
-- dialog 弹窗
-- notification 消息通知
-- message 顶部信息弹窗（风格模仿element）
+- dialog 弹窗(部分功能模仿element)
+- notification 消息通知(功能模仿element)
+- message 顶部信息弹窗(风格、功能模仿element)
 - console 控制台输出
