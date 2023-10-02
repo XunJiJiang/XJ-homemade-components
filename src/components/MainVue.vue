@@ -107,7 +107,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="long">
     <button @click="show = true">呼出</button>
     <xj-dialog
       :visible.sync="show"
@@ -116,6 +116,9 @@ export default {
       :show-close="true"
       :before-close="test"
       :animation-options="option"
+      :close-on-click-modal="true"
+      :close-on-press-escape="true"
+      :lock-scroll="true"
     >
       <xj-dialog
         :visible.sync="show2"
@@ -146,5 +149,7 @@ export default {
 </template>
 
 <style scoped>
-
+.long{
+  height: 200vh;
+}
 </style>

@@ -25,6 +25,11 @@ modal: {
   type: Boolean,
   default: true
 },
+// 是否在 Dialog 出现时将滚动锁定
+lockScroll: {
+  type: Boolean,
+  default: true
+},
 // 是否可以通过点击 modal 关闭 Dialog
 'close-on-click-modal': {
   type: Boolean,

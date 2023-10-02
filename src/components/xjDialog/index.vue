@@ -27,23 +27,28 @@ export default {
       type: Boolean,
       default: true
     },
+    // 是否在 Dialog 出现时将滚动锁定
+    lockScroll: {
+      type: Boolean,
+      default: true
+    },
     // 是否可以通过点击 modal 关闭 Dialog
-    'close-on-click-modal': {
+    closeOnClickModal: {
       type: Boolean,
       default: true
     },
     // 是否可以通过按下 ESC 关闭 Dialog
-    'close-on-press-escape': {
+    closeOnPressEscape: {
       type: Boolean,
       default: true
     },
     // 是否显示关闭按钮
-    'show-close': {
+    showClose: {
       type: Boolean,
       default: true
     },
     // 关闭前的回调，会暂停 Dialog 的关闭
-    'before-close': {
+    beforeClose: {
       type: Function
     },
     // 开启 关闭 动画配置
@@ -112,6 +117,13 @@ export default {
      */
     done () {
       this.$emit('update:visible', false)
+    },
+    /**
+     * 锁定滚动
+     */
+    scroll (e) {
+      e.preventDefault()
+      return false
     }
   },
   // 监听属性支持异步，所以用监听属性
@@ -126,6 +138,11 @@ export default {
         // const dialogMain = this.$refs['dialog-main']
         this.animation.transitionTimingFunction = 'ease'
         if (newV && !oldV) {
+          if (this.lockScroll) {
+            console.log(1)
+            window.addEventListener('touchmove', this.scroll, {passive: false})
+            window.addEventListener('mousewheel', this.scroll, {passive: false})
+          }
           if (this.animationOptions['on'].length === 0) {
             this.animation.nowLocation = {}
             this.visibleData = newV
@@ -150,6 +167,10 @@ export default {
             })
           }
         } else {
+          if (this.lockScroll) {
+            window.removeEventListener('touchmove', this.scroll)
+            window.removeEventListener('mousewheel', this.scroll)
+          }
           if (this.animationOptions['off'].length === 0) {
             this.animation.nowLocation = {}
             this.visibleData = newV
@@ -191,7 +212,9 @@ export default {
 </script>
 
 <template>
-  <div id="dialog" v-show="visibleData">
+  <div id="dialog" v-show="visibleData"
+
+  >
     <!--  遮罩层  -->
     <div
       class="dialog-modal"
@@ -301,7 +324,6 @@ export default {
 
 .dialog-footer div {
   float: right;
-  //right: 0;
 }
 
 .dialog-footer::after {
