@@ -1,6 +1,6 @@
 # XJ-自制组件
 
-中文 | [English](README.en-US.md)
+中文 | [English](README.en-US.md) | [日本語](README.jp.md)
 
 ## 项目设置
 ```shell

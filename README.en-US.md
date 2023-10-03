@@ -1,6 +1,6 @@
 # xj-homemade-components
 
-[中文](README.md) | English
+[中文](README.md) | English | [日本語](README.jp.md)
 
 ## Project setup
 
