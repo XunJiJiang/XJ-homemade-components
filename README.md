@@ -1,35 +1,29 @@
-# xj-homemade-components
+# XJ-自制组件
 
-## Project setup
-```
+中文 | [English](README.en-US.md)
+
+## 项目设置
+```shell
 npm install
 ```
 
-### Compiles and hot-reloads for development
-```
+### 用于开发的编译和热重载
+```shell
 npm run serve
 ```
 
-### Compiles and minifies for production
-```
+### 编译并缩小以用于生产
+```shell
 npm run build
 ```
 
-### Lints and fixes files
-```
-npm run lint
-```
+## 关于
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+这是一个测试性的自制组件
 
-## About
-
-一个测试性的自制组件
-
-当前仅支持
+当前仅支持：
 
 - dialog 弹窗(部分功能模仿element)
 - notification 消息通知(功能模仿element)
-- message 顶部信息弹窗(风格、功能模仿element)
+- message 顶部信息弹窗(风格和功能模仿element)
 - console 控制台输出
