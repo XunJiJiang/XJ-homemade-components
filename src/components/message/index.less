@@ -23,7 +23,7 @@
     align-items: center;
     border-radius: 4px;
     padding: 15px 15px 15px 20px;
-    border: 0px solid;
+    border: 0 solid;
     transition: all .4s;
     display: flex;
     justify-content: center;
@@ -66,4 +66,35 @@
     border-color: rgb(235, 238, 245);
     color: rgb(144, 147, 153);
   }
+}
+
+.message-close.icon {
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+
+.message-close.ui-icon-close {
+  //font-size: .8em;
+  //vertical-align: -0.15em;
+  //color: #00000055;
+  fill: currentColor;
+  overflow: hidden;
+  position: absolute;
+  top: calc(50% - 5px);
+  right: 18px;
+  transition: all .2s;
+  border-radius: 50%;
+  width: 10px;
+  height: 10px;
+  text-align: center;
+  line-height: 100%;
+  background: #00000022;
+  cursor: pointer;
+}
+
+.message-close.ui-icon-close:hover {
+  background-color: rgba(0, 0, 0, 0.54);
 }

@@ -61,7 +61,7 @@ class Notification {
    * @param {String} location 位置 选填 默认left-bottom   left-top right-top right-bottom
    * @param {Number} duration 持续时间 如果是0 则不会自动关闭 除 0 外 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭计时
-   * @returns 
+   * @returns {Promise} 自调用异步函数 返回Promise
    */
   notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true}) {
     return (async () => {
@@ -128,6 +128,7 @@ class Notification {
       // 创建关闭节点
       if (showClose) {
         const closeSvg = document.createElement('svg');
+        closeSvg.classList.add('notification-close');
         closeSvg.classList.add('icon');
         closeSvg.classList.add('ui-icon-close');
         closeSvg.classList.add('svg-icon');
@@ -178,7 +179,7 @@ class Notification {
         let interval_close;
         let intervalNum_close = 300;
         // let timeout_close = null;
-        // 当鼠标移入时停止消失及时
+        // 当鼠标移入时停止消失
         newDiv.addEventListener('mouseenter', () => {
           clearTimeout(timeout);
           const countdownDiv = newDiv.getElementsByClassName(countdownId)[0];

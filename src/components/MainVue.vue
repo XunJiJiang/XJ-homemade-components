@@ -128,7 +128,8 @@ export default {
         :show-close="true"
         :before-close="test"
         :options="option"
-        :width="'100%'"
+        :width="'80%'"
+        :mob-width="'80%'"
       >
         <span slot="footer">
           <button @click="show2 = false" class="button">完成</button>
