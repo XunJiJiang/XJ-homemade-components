@@ -15,6 +15,11 @@ width: {
   type: String,
   default: '50%'
 },
+// 当页面宽度太小时的宽度，如移动端
+mobWidth: {
+type: String,
+default: '80%'
+},
 // Dialog CSS 中的 margin-top 值
 top: {
   type: String,
@@ -71,7 +76,7 @@ animationOptions: {
 `animationOptions`配置内容
 ```vue
 {
-  // 动画速度 （每帧之间）
+  // 动画速度 （每个动画节点之间），若不写默认300
   speed: Number,
   on: [{
     top?: String, // margin-top
@@ -80,7 +85,7 @@ animationOptions: {
     'transform-origin'?: String,
     opacity?: String,
     transition?: String,
-    'transition-duration'?: String
+    speed: Number // 当前动画节点运行时常，若不写，则以外部 speed 为准
   }],
   off: [{
     top?: String, // margin-top
@@ -89,7 +94,7 @@ animationOptions: {
     'transform-origin'?: String,
     opacity?: String,
     transition?: String,
-    'transition-duration'?: String
+    speed: Number
   }] 
 }
 ```

@@ -1,6 +1,6 @@
 <script>
-import xjDialog from './xjDialog'
-import {message, notification} from "@/components/index";
+// import xjDialog from './xjDialog'
+import {message, notification, xjDialog} from "@/components/index";
 export default {
   name: 'mainVue',
   components: {
@@ -115,10 +115,11 @@ export default {
       :modal="true"
       :show-close="true"
       :before-close="test"
-      :animation-options="option"
+      :options="option"
       :close-on-click-modal="true"
       :close-on-press-escape="true"
       :lock-scroll="true"
+      :mob-width="'80%'"
     >
       <xj-dialog
         :visible.sync="show2"
@@ -126,7 +127,8 @@ export default {
         :modal="false"
         :show-close="true"
         :before-close="test"
-        :animation-options="option"
+        :options="option"
+        :width="'100%'"
       >
         <span slot="footer">
           <button @click="show2 = false" class="button">完成</button>

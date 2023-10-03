@@ -17,6 +17,11 @@ export default {
       type: String,
       default: '50%'
     },
+    // 当页面宽度太小时的宽度，如移动端
+    mobWidth: {
+      type: String,
+      default: '80%'
+    },
     // Dialog CSS 中的 margin-top 值
     top: {
       type: String,
@@ -52,21 +57,11 @@ export default {
       type: Function
     },
     // 开启 关闭 动画配置
-    animationOptions: {
+    options: {
       // 数组里是动画的过程，若on长度大于1，则最后位置即为停止位置
       type: Object,
       default () {
-        return {
-          speed: 300,
-          on: [{
-            opacity: '0',
-            top: 'calc(15vh - 10px)'
-          }],
-          off: [{
-            opacity: '0',
-            top: 'calc(15vh - 10px)'
-          }]
-        }
+        return null
       }
     }
   },
@@ -74,17 +69,6 @@ export default {
     return {
       visibleData: false,
       animation: {
-        defaultAnimationOptions: {
-          speed: 300,
-          on: [{
-            opacity: '0',
-            top: 'calc(15vh - 10px)'
-          }],
-          off: [{
-            opacity: '0',
-            top: 'calc(15vh - 10px)'
-          }]
-        },
         nowLocation: {},
         transitionTimingFunction: 'ease',
         modal: {opacity: 0}
@@ -126,6 +110,41 @@ export default {
       return false
     }
   },
+  computed: {
+      trueWidth () {
+        return /Android|iPhone|iPod/i.test(navigator.userAgent) && window.matchMedia('(orientation: portrait)')['matches'] ? this.mobWidth : this.width
+      },
+      animationOptions () {
+        /* 如果 options 传入为空则设置此默认值 */
+        if (this.options === null) {
+          return {
+            on: [{
+              opacity: '0',
+              top: 'calc(15vh - 10px)',
+              speed: 300
+            }],
+            off: [{
+              opacity: '0',
+              top: 'calc(15vh - 10px)',
+              speed: 300
+            }]
+          }
+        }
+        /* 记录 options 外置 speed 值 */
+        let _interval_speed = this.options.speed || 300
+        /* 缓存 动画数据 */
+        const _options = { on: [], off: []}
+        _options['on'] = this.options['on'].filter(item=> {
+          if (!('speed' in item)) item.speed = _interval_speed
+          return item
+        })
+        _options['off'] = this.options['off'].filter(item => {
+          if (!('speed' in item)) item.speed = _interval_speed
+          return item
+        })
+        return _options
+      }
+  },
   // 监听属性支持异步，所以用监听属性
   watch: {
     /**
@@ -133,21 +152,27 @@ export default {
      */
     visible: {
       async handler (newV, oldV) {
-        // await new Promise(resolve => setTimeout(resolve, 3000))
         // const dialogModal = this.$refs['dialog-modal']
         // const dialogMain = this.$refs['dialog-main']
+        // 为了动画流畅度，当设置多个动画节点的动画时，transition-timing-function = 'linear'
         this.animation.transitionTimingFunction = 'ease'
+        /*
+         * 判断是开启 dialog 还是关闭 dialog
+         * 用于决定动画播放
+         */
         if (newV && !oldV) {
+          /* 判断是否阻止默认滚动 */
           if (this.lockScroll) {
-            console.log(1)
             window.addEventListener('touchmove', this.scroll, {passive: false})
             window.addEventListener('mousewheel', this.scroll, {passive: false})
           }
           if (this.animationOptions['on'].length === 0) {
+            /* 当 options 长度为0时的动画 */
             this.animation.nowLocation = {}
             this.visibleData = newV
             this.animation.modal.opacity = '1'
           } else if (this.animationOptions['on'].length === 1) {
+            /* 当 options 长度为1时的动画 */
             this.animation.nowLocation = this.animationOptions['on'][0]
             this.visibleData = newV
             setTimeout(() => {
@@ -155,7 +180,11 @@ export default {
               this.animation.modal.opacity = '1'
             }, 10)
           } else {
+            /* 当 options 长度为大于1时的动画，此时width，top等属性的值可能被忽视 */
             this.animation.transitionTimingFunction = 'linear'
+            /* 动画延迟计时 */
+            let timeout = 0;
+            /* 遍历动画设置的值，逐个动画节点进行设置 */
             this.animationOptions['on'].forEach((item, index) => {
               setTimeout(() => {
                 this.animation.nowLocation = item
@@ -163,7 +192,8 @@ export default {
                   this.visibleData = newV
                   setTimeout(() => this.animation.modal.opacity = '1', 10)
                 }, 10)
-              }, index * this.animationOptions.speed)
+              }, timeout)
+              timeout += item.speed
             })
           }
         } else {
@@ -180,20 +210,19 @@ export default {
             this.animation.modal.opacity = '0'
             setTimeout(() => {
               this.visibleData = newV
-            }, this.animationOptions.speed)
+            }, this.animationOptions['off'][0].speed)
           } else {
             this.animation.transitionTimingFunction = 'linear'
             this.animation.modal.opacity = '0'
+            let timeout = 0;
             this.animationOptions['off'].forEach((item, index) => {
               setTimeout(() => {
                 this.animation.nowLocation = item
                 if (index === this.animationOptions['off'].length - 1) {
-                  setTimeout(() => {
-                    this.visibleData = newV
-                    // setTimeout(() => this.animation.modal.opacity = '0', 10)
-                  }, 10)
+                  setTimeout(() => this.visibleData = newV, 10)
                 }
-              }, index * this.animationOptions.speed)
+              }, timeout)
+              timeout += item.speed
             })
           }
         }
@@ -229,13 +258,13 @@ export default {
       ref="dialog-main"
       :style="{
         marginTop: animation.nowLocation['top'] || top,
-        // width: animation.nowLocation['width'] || width,
+        width: /*animation.nowLocation['width'] ||*/ trueWidth,
         left: animation.nowLocation['left'] || '50%',
         transform: animation.nowLocation['transform'] || 'translateX(-50%)',
         transformOrigin: animation.nowLocation['transform-origin'] || 'left center',
         opacity: animation.nowLocation['opacity'] || '1',
         transition: animation.nowLocation['transition'] || 'all',
-        transitionDuration: animation.nowLocation['transition-duration'] || animationOptions.speed / 1000 + 's' || '.3s',
+        transitionDuration: animation.nowLocation.speed / 1000 + 's' || '.3s',
         transitionTimingFunction: animation.transitionTimingFunction
       }"
     >
