@@ -1,4 +1,29 @@
 # XJ Dialog
+## 使用方法
+**示例**
+```vue
+<xj-dialog
+  :visible.sync="show"
+  title="标题"
+  :modal="true"
+  :show-close="true"
+  :before-close="test"
+  :options="option"
+  :close-on-click-modal="true"
+  :close-on-press-escape="true"
+  :lock-scroll="true"
+  :mob-width="'80%'"
+>
+  <p>这是主体信息</p>
+  <p>这是主体信息</p>
+  <button @click="option = option1">切换到动画1</button>
+  <button @click="option = option2">切换到动画2</button>
+  <span slot="footer">
+    <p>页脚信息</p>
+    <button @click="show = false" class="button">完成</button>
+  </span>
+</xj-dialog>
+```
 **属性**
 ```vue
 // 是否显示 Dialog，支持 .sync 修饰符

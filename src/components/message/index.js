@@ -20,7 +20,7 @@ class Message {
    * @param {String} type 类型 默认normal success warning error
    * @param {Number} duration 持续时间 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭
-   * @returns {Promise} 自调用异步函数 返回Promise
+   * @returns {Promise} 自调用异步函数 返回Promise,没有有效的then
    */
   message ({ message, type = 'normal', duration = 3000, showClose = true }) {
     return (async () => {

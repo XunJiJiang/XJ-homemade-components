@@ -27,3 +27,15 @@ npm run build
 - notification 消息通知(功能模仿element)
 - message 顶部信息弹窗(风格和功能模仿element)
 - console 控制台输出
+
+## 更新记录
+
+> 从2023年10月6日开始记录
+
+**2023-10-6**
+
+```
+修复了dialog 在高于视窗时无法滚动，导致超出位置无法显示的bug
+notification 的消失倒计时可视化的动画修改为始终不透明（如果设置了自动关闭）
+```
+

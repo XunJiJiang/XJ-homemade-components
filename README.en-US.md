@@ -30,3 +30,15 @@ Currently only supported:
 - notification (Function imitates element)
 - message (Style and functionality imitate element)
 - console output
+
+## Update Record
+
+> Recording begins on October 6, 2023
+
+**2023-10-6**
+
+```
+Fixed the bug that the dialog cannot be scrolled when it is higher than the view window, resulting in the inability to display beyond the position.
+The animation of notification's disappearance countdown visualization is modified to always be opaque (if automatic closing is set)
+```
+

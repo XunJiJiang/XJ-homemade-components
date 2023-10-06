@@ -1,5 +1,5 @@
 <script>
-// import './assets'
+import { v4 as uuidv4 } from 'uuid';
 export default {
   name: 'xj-dialog',
   props: {
@@ -67,6 +67,7 @@ export default {
   },
   data () {
     return {
+      uuid: uuidv4(),
       visibleData: false,
       animation: {
         nowLocation: {},
@@ -108,6 +109,78 @@ export default {
     scroll (e) {
       e.preventDefault()
       return false
+    },
+    /**
+     * dialog 超出页面滚轮滚动支持
+     */
+    dialogMainScroll (e) {
+      const _dialogMain = this.$refs['dialog-main']
+      const _dialogMainHeight = _dialogMain.offsetHeight
+      const _screenHeight = window.innerHeight / 4 * 3
+      if (_dialogMainHeight < window.innerHeight / 8 * 7) return
+      const _oldTransformData = getComputedStyle(_dialogMain).transform.replace(")","").split(',')
+      const _translateData = [Number(_oldTransformData[4]), Number(_oldTransformData[5])]
+      if ((_translateData[1] < e.deltaY * 2 && e.deltaY < 0) || (_translateData[1] > -_dialogMainHeight + _screenHeight + e.deltaY * 2 && e.deltaY > 0))
+        _translateData[1] -= e.deltaY * 2
+      else {
+        if (e.deltaY < 0) _translateData[1] = 0
+        else _translateData[1] = -_dialogMainHeight + _screenHeight
+      }
+      _dialogMain.style.transform = `${_oldTransformData.slice(0, 4).join(',')}, ${_translateData[0]}, ${_translateData[1]})`
+    },
+    /**
+     * dialog 超出页面触摸滚动支持
+     */
+    dialogMainTouch () {
+      // const _dialogMain = this.$refs['dialog-main']
+      // const _oldTransformData = getComputedStyle(_dialogMain).transform.replace(")","").split(',')
+      // const _translateData = [Number(_oldTransformData[4]), Number(_oldTransformData[5])]
+      // const _dialogMainHeight = _dialogMain.offsetHeight
+      // const _screenHeight = window.innerHeight / 4 * 3
+      // if (_dialogMainHeight < window.innerHeight / 8 * 7) return
+      const uuid = this.uuid
+      return {
+        _dialogMain: null,
+        _dialogMainHeight: null,
+        _screenHeight: null,
+        _oldTransformData: null,
+        _translateData: null,
+        _isOneTouch: false,
+        _startLocation: 0,
+        _oldLocation: 0,
+        _newLocation: 0,
+        start ({ touches: [touch, touchTwo] }) {
+          if (typeof touchTwo !== 'undefined') return
+          if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
+          this._isOneTouch = true
+          this._oldLocation = touch.clientY
+          this._dialogMain = document.getElementsByClassName(uuid)[0]
+          this._dialogMainHeight = this._dialogMain.offsetHeight
+          this._screenHeight = window.innerHeight / 4 * 3
+          this._oldTransformData = getComputedStyle(this._dialogMain).transform.replace(")","").split(',')
+          this._translateData = [Number(this._oldTransformData[4]), Number(this._oldTransformData[5])]
+        },
+        move ({ touches: [touch, touchTwo] }) {
+          if (typeof touchTwo !== 'undefined') return
+          if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
+          this._newLocation = touch.clientY
+          const heightOfChange = this._newLocation - this._oldLocation
+          // this._translateData[1] += heightOfChange
+          if ((this._translateData[1] < 0 && heightOfChange > 0) || (this._translateData[1] > -this._dialogMainHeight + this._screenHeight && heightOfChange < 0))
+            this._translateData[1] += heightOfChange
+          else {
+            if (heightOfChange > 0) this._translateData[1] = 0
+            else this._translateData[1] = -this._dialogMainHeight + this._screenHeight
+          }
+          this._dialogMain.style.transform = `${this._oldTransformData.slice(0, 4).join(',')}, ${this._translateData[0]}, ${this._translateData[1]})`
+          this._oldLocation = touch.clientY
+        },
+        end ({ touches }) {
+          if (touches.length > 1) return
+          if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
+          this._isOneTouch = false
+        }
+      }
     }
   },
   computed: {
@@ -152,8 +225,8 @@ export default {
      */
     visible: {
       async handler (newV, oldV) {
-        // const dialogModal = this.$refs['dialog-modal']
-        // const dialogMain = this.$refs['dialog-main']
+        // const _dialogModal = this.$refs['dialog-modal']
+        // const _dialogMain = this.$refs['dialog-main']
         // 为了动画流畅度，当设置多个动画节点的动画时，transition-timing-function = 'linear'
         this.animation.transitionTimingFunction = 'ease'
         /*
@@ -161,6 +234,8 @@ export default {
          * 用于决定动画播放
          */
         if (newV && !oldV) {
+          /* 添加 ESC 关闭事件 */
+          if (this.closeOnPressEscape) window.addEventListener('keyup', this.closeDialogOnESC)
           /* 判断是否阻止默认滚动 */
           if (this.lockScroll) {
             window.addEventListener('touchmove', this.scroll, {passive: false})
@@ -197,6 +272,8 @@ export default {
             })
           }
         } else {
+          /* 移除 ESC 关闭事件 */
+          window.removeEventListener('keyup', this.closeDialogOnESC)
           if (this.lockScroll) {
             window.removeEventListener('touchmove', this.scroll)
             window.removeEventListener('mousewheel', this.scroll)
@@ -230,19 +307,30 @@ export default {
     }
   },
   mounted () {
-    // const dialogModal = this.$refs['dialog-modal']
-    // const dialogMain = this.$refs['dialog-main']
-    window.addEventListener('keyup', this.closeDialogOnESC)
+    // const _dialogModal = this.$refs['dialog-modal']
+    const _dialogMain = this.$refs['dialog-main']
+    _dialogMain.classList.add(this.uuid)
+    /* 添加dialog滚轮滚动事件 */
+    const touchOperate = this.dialogMainTouch()
+    _dialogMain.addEventListener('wheel', this.dialogMainScroll)
+    _dialogMain.addEventListener('touchstart', touchOperate.start)
+    _dialogMain.addEventListener('touchmove', touchOperate.move)
+    _dialogMain.addEventListener('touchend', touchOperate.end)
   },
   destroyed() {
-    window.removeEventListener('keyup', this.closeDialogOnESC)
+
   }
 }
 </script>
 
 <template>
-  <div id="dialog" v-show="visibleData"
-
+  <div
+    id="dialog"
+    v-show="visibleData"
+    ref="dialog-root"
+    :style="{
+      left: '100%'
+    }"
   >
     <!--  遮罩层  -->
     <div
@@ -313,7 +401,7 @@ export default {
 }
 
 .dialog-modal {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   height: 100vh;
@@ -331,6 +419,7 @@ export default {
   background: #ffffff;
   border-radius: 5px;
   box-shadow: 0 0 4px #00000055;
+  margin-bottom: 15vh;
 }
 
 .dialog-title {

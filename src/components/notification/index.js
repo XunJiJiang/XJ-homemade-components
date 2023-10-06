@@ -1,5 +1,5 @@
 import './index.less'
-// import '../font_4bpv04w8kl3/iconfont.css';
+// import '../font_4bpv04w8kl3/iconfont.cssss';
 // import '../font_4bpv04w8kl3/iconfont.js';
 import { v4 as uuidv4 } from 'uuid';
 import consoleOutput from '../consoleOutput';
@@ -39,7 +39,7 @@ class Notification {
   _closeTransition (newDiv, location, duration, countdownId) {
     if (duration !== 0) {
       const countdownDiv = newDiv.getElementsByClassName(countdownId)[0];
-      countdownDiv.style.opacity = '1';
+      // countdownDiv.style.opacity = '1';
       countdownDiv.style.transition =  `all ${duration/1000}s linear`;
       countdownDiv.style.width = '100%';
     }
@@ -61,7 +61,7 @@ class Notification {
    * @param {String} location 位置 选填 默认left-bottom   left-top right-top right-bottom
    * @param {Number} duration 持续时间 如果是0 则不会自动关闭 除 0 外 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭计时
-   * @returns {Promise} 自调用异步函数 返回Promise
+   * @returns {Promise} 自调用异步函数 返回Promise,没有有效的then
    */
   notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true}) {
     return (async () => {
@@ -184,7 +184,7 @@ class Notification {
           clearTimeout(timeout);
           const countdownDiv = newDiv.getElementsByClassName(countdownId)[0];
           countdownDiv.style.transition =  `all .3s cubic-bezier(.26,.63,.74,1.02)`;
-          countdownDiv.style.opacity = '0';
+          // countdownDiv.style.opacity = '0';
           countdownDiv.style.width = '0%';
           intervalNum_close = 300;
           interval_close = setInterval(() => {
