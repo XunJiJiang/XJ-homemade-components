@@ -1,10 +1,10 @@
 {
   "name": "xj-homemade-components",
-  "version": "0.1.0",
+  "version": "0.3.6",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve --open",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {

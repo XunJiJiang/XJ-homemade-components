@@ -1,9 +1,10 @@
 <script>
-import {xj_message, xj_notification, xj_dialog} from "@/components/index";
+import { xj_message, xj_notification, xj_dialog, xj_multi_line_stream } from "@/components/index";
 export default {
   name: 'mainVue',
   components: {
-    'xj-dialog': xj_dialog
+    'xj-dialog': xj_dialog,
+    'xj-multi-line-stream': xj_multi_line_stream
   },
   data () {
     return {
@@ -94,19 +95,25 @@ export default {
     xj_message({
       message: 'hello',
       type: 'success'
-    });
+    })
     xj_notification({
       title: 'hello',
       message: 'hello',
       type: 'success',
       location: 'right-bottom'
-    });
+    })
   }
 }
 </script>
 
 <template>
   <div class="long">
+    <xj-multi-line-stream :virtual-key="'111'">
+      <div slot="v-node">
+        <p>111</p>
+        <h3>e22s</h3>
+      </div>
+    </xj-multi-line-stream>
     <button @click="show = true">呼出</button>
     <xj-dialog
       :visible.sync="show"

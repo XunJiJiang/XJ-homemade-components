@@ -1,13 +1,14 @@
+import Console from "./console"
 import Message from './message'
 import Notification from './notification'
-import ConsoleOutput from "./consoleOutput";
 import xj_dialog from "./xj-dialog";
+import xj_multi_line_stream from './multi-line-stream-arrangement'
 
-const xj_message = Message.message.bind(Message);
+const xj_console = Console
+xj_console.versionLog(process.env.VUE_APP_TITLE, process.env.VUE_APP_VERSION)
 
-const xj_notification = Notification.notification.bind(Notification);
+const xj_message = Message.message.bind(Message)
 
-const xj_console = ConsoleOutput
-xj_console.versionLog('XJ', '0.1.0')
+const xj_notification = Notification.notification.bind(Notification)
 
-export { xj_message, xj_notification, xj_console, xj_dialog }
+export { xj_message, xj_notification, xj_console, xj_dialog, xj_multi_line_stream }
