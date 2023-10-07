@@ -1,6 +1,4 @@
 import './index.less'
-// import '../font_4bpv04w8kl3/iconfont.cssss';
-// import '../font_4bpv04w8kl3/iconfont.js';
 import { v4 as uuidv4 } from 'uuid';
 import consoleOutput from '../consoleOutput';
 // import message from '../message';

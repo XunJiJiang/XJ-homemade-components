@@ -1,10 +1,9 @@
 <script>
-// import xjDialog from './xjDialog'
-import {message, notification, xjDialog} from "@/components/index";
+import {xj_message, xj_notification, xj_dialog} from "@/components/index";
 export default {
   name: 'mainVue',
   components: {
-    'xj-dialog': xjDialog
+    'xj-dialog': xj_dialog
   },
   data () {
     return {
@@ -92,11 +91,11 @@ export default {
     }
   },
   mounted () {
-    message({
+    xj_message({
       message: 'hello',
       type: 'success'
     });
-    notification({
+    xj_notification({
       title: 'hello',
       message: 'hello',
       type: 'success',
