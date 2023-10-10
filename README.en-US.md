@@ -44,3 +44,9 @@ Fixed the bug that the dialog cannot be scrolled when it is higher than the view
 The animation of notification's disappearance countdown visualization is modified to always be opaque (if automatic closing is set)
 ```
 
+**2023-10-10**
+
+```
+Optimize dialog. Add scrolling and rebound effects.
+Fix some bugs.
+```
