@@ -71,9 +71,16 @@ export default {
       visibleData: false,
       animation: {
         nowLocation: {},
+        default() {
+          return {
+            speed: 300,
+            // transitionTimingFunction: 'ease'
+          }
+        },
         transitionTimingFunction: 'ease',
-        modal: {opacity: 0}
-      }
+        modal: { opacity: 0 }
+      },
+      timeout: [],
     }
   },
   methods: {
@@ -101,6 +108,10 @@ export default {
      * 关闭 Dialog 实际执行
      */
     done () {
+      const _oldTransformData = getComputedStyle(this._dialogMain).transform.replace(")","").split(',')
+      const _translateData = [Number(_oldTransformData[4]), Number(_oldTransformData[5])]
+      _translateData[1] = 0
+      this._dialogMain.style.transform = `${_oldTransformData.slice(0, 4).join(',')}, ${_translateData[0]}, ${_translateData[1]})`
       this.$emit('update:visible', false)
     },
     /**
@@ -108,70 +119,80 @@ export default {
      */
     scroll (e) {
       e.preventDefault()
-      return false
+      // return false
     },
     /**
-     * dialog 超出页面滚轮滚动支持
+     * dialog 超出页面的滚轮滚动支持
      */
     dialogMainScroll (e) {
-      const _dialogMain = this.$refs['dialog-main']
-      const _dialogMainHeight = _dialogMain.offsetHeight
+      if (this.timeout.length > 0) {
+        this.timeout.forEach(item => {
+          clearTimeout(item)
+        })
+        this.timeout = []
+      }
+      const _dialogMainHeight = this._dialogMain.offsetHeight
       const _screenHeight = window.innerHeight / 4 * 3
-      if (_dialogMainHeight < window.innerHeight / 8 * 7) return
-      const _oldTransformData = getComputedStyle(_dialogMain).transform.replace(")","").split(',')
+      if (_dialogMainHeight < window.innerHeight / 8 * 7) return /* dialog未超出边界，忽略滚动 */
+      this._dialogMain.style.transitionTimingFunction = 'ease'
+      this._dialogMain.offsetTop
+      const _oldTransformData = getComputedStyle(this._dialogMain).transform.replace(")","").split(',')
       const _translateData = [Number(_oldTransformData[4]), Number(_oldTransformData[5])]
       if ((_translateData[1] < e.deltaY * 2 && e.deltaY < 0) || (_translateData[1] > -_dialogMainHeight + _screenHeight + e.deltaY * 2 && e.deltaY > 0))
+        /* 正常滚动进入该条件 */
         _translateData[1] -= e.deltaY * 2
       else {
-        if (e.deltaY < 0) _translateData[1] = 0
-        else _translateData[1] = -_dialogMainHeight + _screenHeight
+        /* 超出滚动许可范围进入该条件 */
+        _translateData[1] -= e.deltaY * 2
+        /* 超出后的回滚 */
+        this.timeout[0] = setTimeout(() => {
+          /* 在顶部 */
+          if (e.deltaY < 0) _translateData[1] = 0
+          /* 在底部 */
+          else _translateData[1] = -_dialogMainHeight + _screenHeight
+          this._dialogMain.style.transform = `${_oldTransformData.slice(0, 4).join(',')}, ${_translateData[0]}, ${_translateData[1]})`
+        },180)
       }
-      _dialogMain.style.transform = `${_oldTransformData.slice(0, 4).join(',')}, ${_translateData[0]}, ${_translateData[1]})`
+      this._dialogMain.style.transform = `${_oldTransformData.slice(0, 4).join(',')}, ${_translateData[0]}, ${_translateData[1]})`
     },
     /**
-     * dialog 超出页面触摸滚动支持
+     * dialog 超出页面的触摸滚动支持
      */
     dialogMainTouch () {
-      // const _dialogMain = this.$refs['dialog-main']
-      // const _oldTransformData = getComputedStyle(_dialogMain).transform.replace(")","").split(',')
-      // const _translateData = [Number(_oldTransformData[4]), Number(_oldTransformData[5])]
-      // const _dialogMainHeight = _dialogMain.offsetHeight
-      // const _screenHeight = window.innerHeight / 4 * 3
-      // if (_dialogMainHeight < window.innerHeight / 8 * 7) return
-      const uuid = this.uuid
+      const _uuid = this.uuid
       return {
         _dialogMain: null,
         _dialogMainHeight: null,
         _screenHeight: null,
         _oldTransformData: null,
         _translateData: null,
+        _timeout: null,
         _isOneTouch: false,
         _startLocation: 0,
         _oldLocation: 0,
         _newLocation: 0,
         start ({ touches: [touch, touchTwo] }) {
+          if (this._timeout) {
+            clearTimeout(this._timeout)
+            this._timeout = null
+          }
           if (typeof touchTwo !== 'undefined') return
           if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
           this._isOneTouch = true
           this._oldLocation = touch.clientY
-          this._dialogMain = document.getElementsByClassName(uuid)[0]
+          this._dialogMain = document.getElementsByClassName(_uuid)[0]
           this._dialogMainHeight = this._dialogMain.offsetHeight
           this._screenHeight = window.innerHeight / 4 * 3
+          this._dialogMain.style.transitionTimingFunction = 'ease'
           this._oldTransformData = getComputedStyle(this._dialogMain).transform.replace(")","").split(',')
           this._translateData = [Number(this._oldTransformData[4]), Number(this._oldTransformData[5])]
         },
         move ({ touches: [touch, touchTwo] }) {
           if (typeof touchTwo !== 'undefined') return
-          if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
+          if (this._dialogMainHeight < window.innerHeight / 8 * 7) return /* dialog未超出边界，忽略滚动 */
           this._newLocation = touch.clientY
           const heightOfChange = this._newLocation - this._oldLocation
-          // this._translateData[1] += heightOfChange
-          if ((this._translateData[1] < 0 && heightOfChange > 0) || (this._translateData[1] > -this._dialogMainHeight + this._screenHeight && heightOfChange < 0))
-            this._translateData[1] += heightOfChange
-          else {
-            if (heightOfChange > 0) this._translateData[1] = 0
-            else this._translateData[1] = -this._dialogMainHeight + this._screenHeight
-          }
+          this._translateData[1] += heightOfChange
           this._dialogMain.style.transform = `${this._oldTransformData.slice(0, 4).join(',')}, ${this._translateData[0]}, ${this._translateData[1]})`
           this._oldLocation = touch.clientY
         },
@@ -179,16 +200,24 @@ export default {
           if (touches.length > 1) return
           if (this._dialogMainHeight < window.innerHeight / 8 * 7) return
           this._isOneTouch = false
+          if (this._translateData[1] > 0) {
+            this._translateData[1] = 0
+          } else if (this._translateData[1] < -this._dialogMainHeight + this._screenHeight) {
+            this._translateData[1] = -this._dialogMainHeight + this._screenHeight
+          }
+          this.timeout = setTimeout(() => {
+            this._dialogMain.style.transform = `${this._oldTransformData.slice(0, 4).join(',')}, ${this._translateData[0]}, ${this._translateData[1]})`
+          }, 180)
         }
       }
     }
   },
   computed: {
       trueWidth () {
-        return /Android|iPhone|iPod/i.test(navigator.userAgent) && window.matchMedia('(orientation: portrait)')['matches'] ? this.mobWidth : this.width
+        return /android|harmonyos|huawei|iphone|ipod|ios|AppleWebKit.*Mobile.*/i.test(navigator.userAgent.toLowerCase()) && window.matchMedia('(orientation: portrait)')['matches'] ? this.mobWidth : this.width
       },
       animationOptions () {
-        /* 如果 options 传入为空则设置此默认值 */
+        /* 如果 options 传入为null则设置此默认值 */
         if (this.options === null) {
           return {
             on: [{
@@ -207,14 +236,21 @@ export default {
         let _interval_speed = this.options.speed || 300
         /* 缓存 动画数据 */
         const _options = { on: [], off: []}
-        _options['on'] = this.options['on'].filter(item=> {
-          if (!('speed' in item)) item.speed = _interval_speed
-          return item
-        })
-        _options['off'] = this.options['off'].filter(item => {
-          if (!('speed' in item)) item.speed = _interval_speed
-          return item
-        })
+        for (let key in _options) {
+          if (key !== 'on' && key !== 'off') return
+          if (this.options[key]) {
+            _options[key] = this.options[key].filter(item=> {
+              if (!('speed' in item)) item.speed = _interval_speed
+              return item
+            })
+          } else {
+            _options[key] = [{
+              opacity: '0',
+              top: 'calc(15vh - 10px)',
+              speed: 300
+            }]
+          }
+        }
         return _options
       }
   },
@@ -225,10 +261,7 @@ export default {
      */
     visible: {
       async handler (newV, oldV) {
-        // const _dialogModal = this.$refs['dialog-modal']
-        // const _dialogMain = this.$refs['dialog-main']
         // 为了动画流畅度，当设置多个动画节点的动画时，transition-timing-function = 'linear'
-        this.animation.transitionTimingFunction = 'ease'
         /*
          * 判断是开启 dialog 还是关闭 dialog
          * 用于决定动画播放
@@ -241,6 +274,7 @@ export default {
             window.addEventListener('touchmove', this.scroll, {passive: false})
             window.addEventListener('mousewheel', this.scroll, {passive: false})
           }
+          /* 判断执行哪个开启动画，并执行 */
           if (this.animationOptions['on'].length === 0) {
             /* 当 options 长度为0时的动画 */
             this.animation.nowLocation = {}
@@ -252,10 +286,19 @@ export default {
             this.visibleData = newV
             setTimeout(() => {
               this.animation.nowLocation = {}
+              this.animation.transitionTimingFunction = 'ease'
               this.animation.modal.opacity = '1'
+              setTimeout(() => {
+                this.animation.nowLocation = this.animation.default()
+              }, 10)
             }, 10)
+            // setTimeout(() => {
+            //   this.animation.nowLocation = this.animation.default()
+            //   this.animation.transitionTimingFunction = 'ease'
+            // }, this.animation.nowLocation['speed'])
           } else {
             /* 当 options 长度为大于1时的动画，此时width，top等属性的值可能被忽视 */
+            /* 为了动画流畅度，当设置多个动画节点的动画时，transition-timing-function = 'linear' */
             this.animation.transitionTimingFunction = 'linear'
             /* 动画延迟计时 */
             let timeout = 0;
@@ -270,6 +313,10 @@ export default {
               }, timeout)
               timeout += item.speed
             })
+            setTimeout(() => {
+              this.animation.nowLocation = this.animation.default()
+              this.animation.transitionTimingFunction = 'ease'
+            }, timeout)
           }
         } else {
           /* 移除 ESC 关闭事件 */
@@ -287,6 +334,8 @@ export default {
             this.animation.modal.opacity = '0'
             setTimeout(() => {
               this.visibleData = newV
+              this.animation.transitionTimingFunction = 'ease'
+              this.animation.nowLocation = this.animation.default()
             }, this.animationOptions['off'][0].speed)
           } else {
             this.animation.transitionTimingFunction = 'linear'
@@ -301,25 +350,30 @@ export default {
               }, timeout)
               timeout += item.speed
             })
+            setTimeout(() => {
+              this.animation.transitionTimingFunction = 'ease'
+              this.animation.nowLocation = this.animation.default()
+            }, timeout)
           }
         }
       }
     }
   },
   mounted () {
-    // const _dialogModal = this.$refs['dialog-modal']
-    const _dialogMain = this.$refs['dialog-main']
-    _dialogMain.classList.add(this.uuid)
+    this._dialogModal = this.$refs['dialog-modal']
+    this._dialogMain = this.$refs['dialog-main']
+    this._dialogMain.classList.add(this.uuid)
     /* 添加dialog滚轮滚动事件 */
     const touchOperate = this.dialogMainTouch()
-    _dialogMain.addEventListener('wheel', this.dialogMainScroll)
-    _dialogMain.addEventListener('touchstart', touchOperate.start)
-    _dialogMain.addEventListener('touchmove', touchOperate.move)
-    _dialogMain.addEventListener('touchend', touchOperate.end)
+    this._dialogModal.addEventListener('wheel', this.dialogMainScroll)
+    this._dialogMain.addEventListener('wheel', this.dialogMainScroll)
+    this._dialogMain.addEventListener('touchstart', touchOperate.start)
+    this._dialogMain.addEventListener('touchmove', touchOperate.move)
+    this._dialogMain.addEventListener('touchend', touchOperate.end)
   },
-  destroyed() {
-
-  }
+  // destroyed() {
+  //
+  // }
 }
 </script>
 
@@ -420,6 +474,7 @@ export default {
   border-radius: 5px;
   box-shadow: 0 0 4px #00000055;
   margin-bottom: 15vh;
+  overflow: hidden;
 }
 
 .dialog-title {

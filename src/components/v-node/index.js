@@ -14,5 +14,3 @@ class VNode {
 }
 
 export default VNode
-
-'https://juejin.cn/post/6944214549696348168'

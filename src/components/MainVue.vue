@@ -10,6 +10,22 @@ export default {
     return {
       show: false,
       show2: false,
+      option0: {
+        on: [{
+          speed: 8000,
+          top: '28px',
+          transform: 'scale(10%, 10%) translate(-50%, 0)',
+          'transform-origin': 'left top',
+          left: '28px',
+        }],
+        off: [{
+          speed: 8000,
+          top: '28px',
+          transform: 'scale(10%, 10%) translate(-50%, 0)',
+          'transform-origin': 'left top',
+          left: '28px',
+        }]
+      },
       option1: {
         speed: 80,
         on: [{
@@ -80,6 +96,8 @@ export default {
           transform: 'scale(1%, 1%) translate(-50%, 0)'
         }]
       },
+      option3: {},
+      option4: { on: [], off:[] },
       option: this.option1
     }
   },
@@ -188,11 +206,12 @@ export default {
       <p>这是一段信息</p>
       <p>这是一段信息</p>
       <p>这是一段信息</p>
-      <p>这是一段信息</p>
-      <p>这是一段信息</p>
-      <button @click="option = option1">动画1</button>
-      <button @click="option = option2">动画2</button>
       <span slot="footer">
+        <button @click="option = option0">动画0</button>
+        <button @click="option = option1">动画1</button>
+        <button @click="option = option2">动画2</button>
+        <button @click="option = option3">默认动画</button>
+        <button @click="option = option4">关闭动画</button>
         <button @click="show = false" class="button">完成</button>
       </span>
     </xj-dialog>

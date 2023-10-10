@@ -24,6 +24,8 @@ npm run build
 
 This is a test homemade component
 
+There may be irregularities in file configuration.
+
 Currently only supported:
 
 - dialog (Some functions imitate element)
