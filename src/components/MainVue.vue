@@ -127,10 +127,8 @@ export default {
 <template>
   <div class="long">
     <xj-multi-line-stream :virtual-key="'111'">
-      <div slot="v-node">
         <p>111</p>
         <h3>e22s</h3>
-      </div>
     </xj-multi-line-stream>
     <button @click="show = true">呼出</button>
     <xj-dialog

@@ -33,6 +33,7 @@ class Notification {
    * @param {HTMLDivElement} newDiv 关闭的信息
    * @param {String} location 位置 left right
    * @param {Number} duration 自动关闭时间
+   * @param {String} countdownId newDiv 唯一标识
    */
   _closeTransition (newDiv, location, duration, countdownId) {
     if (duration !== 0) {
@@ -59,10 +60,11 @@ class Notification {
    * @param {String} location 位置 选填 默认left-bottom   left-top right-top right-bottom
    * @param {Number} duration 持续时间 如果是0 则不会自动关闭 除 0 外 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭计时
-   * @returns {Promise} 自调用异步函数 返回Promise,没有有效的then
+   * @param {Function} callback 点击通知框时运行的回调函数，默认为null
+   * @returns {Promise} 自调用异步函数 返回Promise,then 成功函数的参数为callback函数的返回值（如果有）
    */
-  notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true}) {
-    return (async () => {
+  notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true, callback = null}) {
+    return (new Promise(resolve => {
       // 如果 duration 为0  则无视传入的 showClose 强制可以手动关闭
       if (duration === 0) {
         if (showClose === false) xj_console.warn('duration为0时, showClose: false将被无视')
@@ -140,6 +142,32 @@ class Notification {
         newDiv.appendChild(closeSvg)
         newDiv.innerHTML += ''
       }
+      let _f = null
+      // 用于保存 callback 返回值
+      // let _fR = null
+      if (callback) {
+        /* 创建通知点击触发的函数
+         *阻止close关闭按钮关闭事件冒泡
+         */
+        _f = async (e) => {
+          /*
+           * 判断点击事件出发位置
+           * 若为 notification-close 关闭按钮 则不触发 callback
+           */
+          if (!e.target.classList.contains('notification-close')) {
+            newDiv.style.transformOrigin = 'center center'
+            newDiv.style.transitionDuration = '.2s'
+            newDiv.style.transform = 'scale(85%)'
+            setTimeout(() => {
+              newDiv.style.transitionDuration = '.3s'
+              this._closeTransition(newDiv, location, 0, countdownId)
+            }, 300)
+            resolve(callback())
+          }
+        }
+        /* 绑定通知点击事件 */
+        newDiv.addEventListener('click', _f)
+      }
       let oldDivLeftBottom
       let oldDivRightBottom
       // 插入到页面
@@ -208,7 +236,7 @@ class Notification {
           timeout = this._closeTransition(newDiv, location, 0, countdownId)
         })
       }
-    })()
+    }))
   }
 }
 
@@ -244,7 +272,18 @@ document.addEventListener('keyup', (e) => {
         message: 'notification message测试-3',
         type: 'warning',
         location: 'right-top',
-        duration: 0
+        duration: 0,
+        async callback () {
+          console.log('@3 async callback 运行了')
+          await new Promise(resolve => {
+            setTimeout(() => {
+              resolve()
+            }, 3000)
+          })
+          return '@3 callback 运行 的返回值'
+        }
+      }).then(v => {
+        console.log('@3.then', v)
       })
       break
     case '4':
@@ -252,7 +291,13 @@ document.addEventListener('keyup', (e) => {
         title: 'notification title测试-4',
         message: 'notification message测试-4',
         type: 'error',
-        location: 'right-bottom'
+        location: 'right-bottom',
+        callback () {
+          console.log('@4 callback 运行了')
+          return '@4 callback 运行 的返回值'
+        }
+      }).then(v => {
+        console.log('@4.then', v)
       })
       break
   }

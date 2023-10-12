@@ -17,13 +17,13 @@ export default {
     key: {
       immediate: false,
       handler () {
-        const _VNode = new xj_VNode({ r_node: this.$refs['v-node'].childNodes})
+        const _VNode = new xj_VNode({ r_node: this.$refs['v-node']})
         console.log(_VNode.r_node)
       }
     }
   },
   mounted () {
-    const _VNode = new xj_VNode({ r_node: this.$refs['v-node'].childNodes})
+    const _VNode = new xj_VNode({ r_node: this.$refs['v-node']})
     console.dir(_VNode.r_node)
   }
 }
@@ -31,7 +31,7 @@ export default {
 
 <template>
   <div>
-    <div class="v-node" ref="v-node" :key="virtualKey" v-show="false"><slot name="v-node"></slot></div>
+    <div class="v-node" ref="v-node" :key="virtualKey" v-show="false"><slot></slot></div>
   </div>
 </template>
 
