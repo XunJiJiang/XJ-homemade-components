@@ -50,3 +50,11 @@ The animation of notification's disappearance countdown visualization is modifie
 Optimize dialog. Add scrolling and rebound effects.
 Fix some bugs.
 ```
+
+**2023-10-12**
+
+```
+Notification adds callback attribute. The type of callback is function.
+This function will be run when the notification box is clicked, and its return value will be used as a parameter of the successful function in the then of the notification's return value.
+If the notification is closed, the parameter of the then function as a success in the notification's return value is 'Close'.
+```

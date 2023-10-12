@@ -34,8 +34,9 @@ class Notification {
    * @param {String} location 位置 left right
    * @param {Number} duration 自动关闭时间
    * @param {String} countdownId newDiv 唯一标识
+   * @param {Function | Null} resolve 用于完成 Promise
    */
-  _closeTransition (newDiv, location, duration, countdownId) {
+  _closeTransition (newDiv, location, duration, countdownId, resolve = null) {
     if (duration !== 0) {
       const countdownDiv = newDiv.getElementsByClassName(countdownId)[0]
       // countdownDiv.style.opacity = '1'
@@ -47,6 +48,7 @@ class Notification {
       // 删除元素
       setTimeout(() => {
         newDiv.remove()
+        if (resolve) resolve('Close')
       }, 400)
     }, duration)
   }
@@ -60,7 +62,7 @@ class Notification {
    * @param {String} location 位置 选填 默认left-bottom   left-top right-top right-bottom
    * @param {Number} duration 持续时间 如果是0 则不会自动关闭 除 0 外 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭计时
-   * @param {Function} callback 点击通知框时运行的回调函数，默认为null
+   * @param {Function | Null} callback 点击通知框时运行的回调函数，默认为null
    * @returns {Promise} 自调用异步函数 返回Promise,then 成功函数的参数为callback函数的返回值（如果有）
    */
   notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true, callback = null}) {
@@ -223,7 +225,7 @@ class Notification {
         newDiv.addEventListener('mouseleave', () => {
           // timeout_close =
             setTimeout(() => {
-            timeout = this._closeTransition(newDiv, location, duration, countdownId)
+            timeout = this._closeTransition(newDiv, location, duration, countdownId, resolve)
           }, intervalNum_close)
         })
         // setTimeout(() => {
@@ -233,7 +235,7 @@ class Notification {
       // 为关闭按钮添加关闭事件
       if (showClose) {
         newDiv.getElementsByTagName('svg')[0].addEventListener('click', () => {
-          timeout = this._closeTransition(newDiv, location, 0, countdownId)
+          timeout = this._closeTransition(newDiv, location, 0, countdownId, resolve)
         })
       }
     }))
