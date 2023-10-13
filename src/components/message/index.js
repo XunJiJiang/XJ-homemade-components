@@ -40,6 +40,8 @@ class Message {
       const text = document.createTextNode(message)
       newSpan.appendChild(text)
       newDiv.appendChild(newSpan)
+      newDiv.style.cursor = 'default'
+      newDiv.style.userSelect = 'none'
       // 创建计时器保存位置
       let timeout
       // 创建关闭节点

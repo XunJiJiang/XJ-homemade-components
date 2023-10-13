@@ -55,3 +55,10 @@ notification 通知 新增 callback 属性，类型为函数
 这个函数将会在通知框被点击时运行，其返回值会在 notification 的返回值的 then 中作为成功的函数的参数
 若通知被关闭，notification 的返回值的 then 中作为成功的函数的参数为 'Close'
 ```
+
+**2023-10-13**
+```
+notification 新增 点击动画
+notification 新增userSelect属性，接收一个 boolean，值为true时文本不可被选中。默认为 true
+message 的文本不可被选中
+```

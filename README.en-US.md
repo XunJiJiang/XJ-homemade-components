@@ -41,7 +41,7 @@ Currently only supported:
 
 ```
 Fixed the bug that the dialog cannot be scrolled when it is higher than the view window, resulting in the inability to display beyond the position.
-The animation of notification's disappearance countdown visualization is modified to always be opaque (if automatic closing is set)
+The animation of Notification's disappearance countdown visualization is modified to always be opaque (if automatic closing is set)
 ```
 
 **2023-10-10**
@@ -55,6 +55,14 @@ Fix some bugs.
 
 ```
 Notification adds callback attribute. The type of callback is function.
-This function will be run when the notification box is clicked, and its return value will be used as a parameter of the successful function in the then of the notification's return value.
-If the notification is closed, the parameter of the then function as a success in the notification's return value is 'Close'.
+This function will be run when the Notification box is clicked, and its return value will be used as a parameter of the successful function in the then of the Notification's return value.
+If the notification is closed, the parameter of the then function as a success in the Notification's return value is 'Close'.
+```
+
+
+**2023-10-13**
+```
+Notification adds click animation.
+Notification adds userSelect attribute. This attribute receives a boolean. When the value is true, the text cannot be selected. Defaults to true.
+The text of Message cannot be selected.
 ```

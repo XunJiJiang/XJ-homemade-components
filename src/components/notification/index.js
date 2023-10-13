@@ -4,7 +4,8 @@ import xj_console from '../console'
 // import message from '../message'
 
 class Notification {
-
+  /* 用于记录callback被触发 */
+  isClick = false
   constructor () {
     // 如果已经创建，则直接退出
     if (document.getElementById('notificationBasicBox-left-top')) return
@@ -48,13 +49,13 @@ class Notification {
       // 删除元素
       setTimeout(() => {
         newDiv.remove()
-        if (resolve) resolve('Close')
+        resolve && resolve('Close')
       }, 400)
     }, duration)
   }
 
   /**
-   * 
+   * notification 通知弹窗
    * @param param0 
    * @param {String} title 标题 选填
    * @param {String} message 信息 必填
@@ -62,11 +63,12 @@ class Notification {
    * @param {String} location 位置 选填 默认left-bottom   left-top right-top right-bottom
    * @param {Number} duration 持续时间 如果是0 则不会自动关闭 除 0 外 最小值为 1000，小于1000会被强制转成1000
    * @param {Boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭计时
-   * @param {Function | Null} callback 点击通知框时运行的回调函数，默认为null
-   * @returns {Promise} 自调用异步函数 返回Promise,then 成功函数的参数为callback函数的返回值（如果有）
+   * @param {Boolean} userSelect 是否限制文本选中 默认 true 禁止选中文本
+   * @param {Function} callback 点击通知框时运行的回调函数，默认为null
+   * @returns {Promise} 自调用异步函数 返回Promise,then 成功函数的参数为 callback函数 的返回值（如果有）
    */
-  notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true, callback = null}) {
-    return (new Promise(resolve => {
+  notification ({title, message, type = 'normal' , location = 'left-bottom', duration = 3000, showClose = true, userSelect = true, callback = null}) {
+    return new Promise(resolve => {
       // 如果 duration 为0  则无视传入的 showClose 强制可以手动关闭
       if (duration === 0) {
         if (showClose === false) xj_console.warn('duration为0时, showClose: false将被无视')
@@ -82,6 +84,9 @@ class Notification {
       newDiv.id = uuid
       newDiv.classList.add('ui-notification')
       newDiv.classList.add(`ui-notification-${location.split('-')[1]}`)
+      newDiv.style.transformOrigin = 'center center'
+      newDiv.style.cursor = 'default'
+      userSelect && (newDiv.style.userSelect = 'none')
       // 创建倒计时
       // let countdownDiv: HTMLDivElement
       let countdownId = uuidv4()
@@ -152,18 +157,18 @@ class Notification {
          *阻止close关闭按钮关闭事件冒泡
          */
         _f = async (e) => {
+          this.isClick = true
           /*
            * 判断点击事件出发位置
            * 若为 notification-close 关闭按钮 则不触发 callback
            */
           if (!e.target.classList.contains('notification-close')) {
-            newDiv.style.transformOrigin = 'center center'
-            newDiv.style.transitionDuration = '.2s'
-            newDiv.style.transform = 'scale(85%)'
+            newDiv.style.transitionDuration = '.1s'
+            // newDiv.style.transform = 'scale(85%)'
             setTimeout(() => {
               newDiv.style.transitionDuration = '.3s'
               this._closeTransition(newDiv, location, 0, countdownId)
-            }, 300)
+            }, 180)
             resolve(callback())
           }
         }
@@ -203,12 +208,28 @@ class Notification {
       // setTimeout(() => {
       newDiv.classList.add(`ui-notification-${location.split('-')[0]}-appear`)
       // }, 10)
+      // 鼠标mousedown时，触发点击动画
+      newDiv.addEventListener('mousedown', (e) => {
+        if (e.target.classList.contains('notification-close')) return
+        newDiv.style.transitionDuration = '.1s'
+        newDiv.style.transform = 'scale(95%)'
+      })
+      // 鼠标mouseup时，触发点击后的反弹动画
+      newDiv.addEventListener('mouseup', () => {
+        newDiv.style.transitionDuration = '.3s'
+        !callback && (newDiv.style.transform = 'scale(100%)')
+      })
+      // 鼠标mouseleave时，触发点击后的反弹动画
+      newDiv.addEventListener('mouseleave', () => {
+        newDiv.style.transitionDuration = '.3s'
+        !this.isClick && (newDiv.style.transform = 'scale(100%)')
+      })
       // 运行消失动画
       if (duration !== 0) {
         let interval_close
         let intervalNum_close = 300
         // let timeout_close = null
-        // 当鼠标移入时停止消失
+        // 当鼠标移入时，停止消失倒计时
         newDiv.addEventListener('mouseenter', () => {
           clearTimeout(timeout)
           const countdownDiv = newDiv.getElementsByClassName(countdownId)[0]
@@ -221,7 +242,7 @@ class Notification {
             else clearInterval(interval_close)
           }, 50)
         })
-        // 鼠标移出时
+        // 鼠标移出时，恢复消失倒计时
         newDiv.addEventListener('mouseleave', () => {
           // timeout_close =
             setTimeout(() => {
@@ -238,7 +259,7 @@ class Notification {
           timeout = this._closeTransition(newDiv, location, 0, countdownId, resolve)
         })
       }
-    }))
+    })
   }
 }
 
@@ -275,6 +296,7 @@ document.addEventListener('keyup', (e) => {
         type: 'warning',
         location: 'right-top',
         duration: 0,
+        userSelect: false,
         async callback () {
           console.log('@3 async callback 运行了')
           await new Promise(resolve => {
