@@ -67,3 +67,10 @@ notification にはクリックアニメーションが追加されます。
 notification userSelect 属性が追加されます。 この属性はブール値を受け取ります。値が true の場合、テキストは選択できません。デフォルトは true です。
 message の本文は選択できません。
 ```
+
+**2023-10-15**
+```
+リファクタリング notification。
+現在の進行状況が残っています: then() メソッドはコールバック関数の実行値を返します。
+notification Vuex への転送
+```

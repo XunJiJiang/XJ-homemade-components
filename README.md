@@ -62,3 +62,10 @@ notification 新增 点击动画
 notification 新增userSelect属性，接收一个 boolean，值为true时文本不可被选中。默认为 true
 message 的文本不可被选中
 ```
+
+**2023-10-15**
+```
+重构 notification。
+当前进度剩余：then返回 回调函数的运行值
+notification 转移至 vuex
+```

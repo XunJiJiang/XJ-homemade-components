@@ -66,3 +66,10 @@ Notification adds click animation.
 Notification adds userSelect attribute. This attribute receives a boolean. When the value is true, the text cannot be selected. Defaults to true.
 The text of Message cannot be selected.
 ```
+
+**2023-10-15**
+```
+Refactor notification.
+Current progress remaining: the then() method returns the running value of the callback function
+notification Transfer to Vuex
+```
