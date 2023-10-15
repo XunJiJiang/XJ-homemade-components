@@ -339,16 +339,6 @@ class Notification {
 
   #addEvent (location, duration, showClose, callback) {
     console.log('#addEvent')
-    if (callback) {
-      this.#rootBox.addEventListener('click', (e) => {
-        if (e.target.classList.contains('xj-notification-close')) return
-        callback()
-        setTimeout(() => {
-        this.#timeout['close'] && clearTimeout(this.#timeout['close'])
-        this.#remove(location)
-        }, 300)
-      })
-    }
     this.#rootBox.addEventListener('mouseenter', () => {
       clearTimeout(this.#timeout['close'])
     })
@@ -368,12 +358,18 @@ class Notification {
       this.#rootBox.style['transition-duration'] = '.4s'
       this.#rootBox.style['transform'] = 'scale(100%)'
     })
-    if (showClose) {
-      console.log(this.#closeSvg)
+    if (callback || showClose) {
       this.#rootBox.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('xj-notification-close')) return
+        if (e.target.classList.contains('xj-notification-close')) {
+          this.#timeout['close'] && clearTimeout(this.#timeout['close'])
+          this.#remove(location)
+          return
+        }
+        callback && callback()
+        callback && setTimeout(() => {
         this.#timeout['close'] && clearTimeout(this.#timeout['close'])
         this.#remove(location)
+        }, 300)
       })
     }
   }

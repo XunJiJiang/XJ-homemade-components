@@ -115,7 +115,7 @@ export default {
         title: 'notification title测试-3',
         message: 'notification message测试-3',
         type: 'warning',
-        location: 'right-top-4',
+        location: 'right-top',
         duration: 0,
         userSelect: false,
         async callback () {
