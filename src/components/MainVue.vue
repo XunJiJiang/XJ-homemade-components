@@ -98,7 +98,45 @@ export default {
       },
       option3: {},
       option4: { on: [], off:[] },
-      option: this.option1
+      option: this.option1,
+      notificationOption: [{
+        title: 'notification title测试-1',
+        message: 'notification message测试-1',
+        type: 'success',
+        location: 'left-top',
+        duration: Math.floor(Math.random() * 5000 + 1000)
+      }, {
+        title: 'notification title测试-2',
+        message: 'notification message测试-2',
+        type: 'normal',
+        location: 'left-bottom',
+        showClose: false
+      }, {
+        title: 'notification title测试-3',
+        message: 'notification message测试-3',
+        type: 'warning',
+        location: 'right-top-4',
+        duration: 0,
+        userSelect: false,
+        async callback () {
+          console.log('@3 async callback 运行了')
+          await new Promise(resolve => {
+            setTimeout(() => {
+              resolve()
+            }, 3000)
+          })
+          return '@3 callback 运行 的返回值'
+        }
+      }, {
+        title: 'notification title测试-4',
+        message: 'notification message测试-4',
+        type: 'error',
+        location: 'right-bottom',
+        callback () {
+          console.log('@4 callback 运行了')
+          return '@4 callback 运行 的返回值'
+        }
+      }]
     }
   },
   methods: {
@@ -107,6 +145,9 @@ export default {
       //   done()
       // }, 3000)
       done()
+    },
+    xj_notification (v) {
+      this.$store.dispatch('xj_notification/xjNotification', v)
     }
   },
   mounted () {
@@ -130,7 +171,11 @@ export default {
         <p>111</p>
         <h3>e22s</h3>
     </xj-multi-line-stream>
-    <button @click="show = true">呼出</button>
+    <button @click="show = true">呼出dialog</button>
+    <button @click="xj_notification(notificationOption[0])">呼出弹窗1</button>
+    <button @click="xj_notification(notificationOption[1])">呼出弹窗2</button>
+    <button @click="xj_notification(notificationOption[2])">呼出弹窗3</button>
+    <button @click="xj_notification(notificationOption[3])">呼出弹窗4</button>
     <xj-dialog
       :visible.sync="show"
       title="title"

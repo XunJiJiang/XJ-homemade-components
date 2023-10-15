@@ -14,7 +14,7 @@ class Message {
 
   // public test: number = 1
   /**
-   * 
+   * message 消息弹窗
    * @param {Object}
    * @param {String} message 消息
    * @param {String} type 类型 默认normal success warning error

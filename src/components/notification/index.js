@@ -85,7 +85,7 @@ class Notification {
       newDiv.classList.add('ui-notification')
       newDiv.classList.add(`ui-notification-${location.split('-')[1]}`)
       newDiv.style.transformOrigin = 'center center'
-      newDiv.style.cursor = 'default'
+      userSelect && (newDiv.style.cursor = 'default')
       userSelect && (newDiv.style.userSelect = 'none')
       // 创建倒计时
       // let countdownDiv: HTMLDivElement
