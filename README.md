@@ -69,3 +69,42 @@ message 的文本不可被选中
 当前进度剩余：then返回 回调函数的运行值
 notification 转移至 vuex
 ```
+
+**2023-10-16**
+
+```
+完成 notification 重构 
+```
+
+新的 notification 的使用方法：
+1. 新建一个 notification 
+
+   传入配置对象，对象属性包括：
+
+   ```
+   @param {string} title 标题 选填
+   @param {string} message 信息 必填
+   @param {string} type 类型 选填 默认normal，其他值包括success、warning、error。
+   @param {string} location 位置 选填 默认left-bottom，其他值包括left-top right-top right-bottom left-bottom-1...
+   @param {number} duration 持续时间 默认3000，如果是0，则不会自动关闭 除 0 外 最小值为 1000
+   @param {boolean} showClose 是否可以手动关闭 默认可以 开启时，鼠标移入会停止自动关闭的计时
+   @param {boolean} userSelect 是否限制文本选中 默认为true，禁止选中文本
+   @param {Function} callback 点击通知框时运行的回调函数，callback 接收一个 notification 位置的参数
+   ```
+
+   ```js
+   const notification = new Notification(option)
+   ```
+
+2. 可使用的方法包括：
+
+   ```js
+   /* 当 location 为三个值，如 left-bottom-1， 此时为绝对定位，不参与动态通知位置管理，且可使用setLocation方法修改位置 */
+   notification.setLocation(number)
+   
+   /* 当传入 callback 时，可使用then方法获取 callback 的返回值 */
+   notification.then(Function)
+   
+   /* 用于关闭 notification  */
+   notification.close()
+   ```

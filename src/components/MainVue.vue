@@ -1,5 +1,5 @@
 <script>
-import { xj_message, xj_notification, xj_dialog, xj_multi_line_stream } from "@/components/index";
+import { xj_message, xj_dialog, xj_multi_line_stream } from "@/components/index";
 export default {
   name: 'mainVue',
   components: {
@@ -113,13 +113,13 @@ export default {
         showClose: false
       }, {
         title: 'notification title测试-3',
-        message: 'notification message测试-3',
+        message: 'notification message测试-5',
         type: 'warning',
-        location: 'right-top',
+        location: 'right-top-9',
         duration: 0,
         userSelect: false,
-        async callback () {
-          console.log('@3 async callback 运行了')
+        async callback (l) {
+          console.log('@3 async callback 运行了', l)
           await new Promise(resolve => {
             setTimeout(() => {
               resolve()
@@ -132,7 +132,7 @@ export default {
         message: 'notification message测试-4',
         type: 'error',
         location: 'right-bottom',
-        callback () {
+        async callback () {
           console.log('@4 callback 运行了')
           return '@4 callback 运行 的返回值'
         }
@@ -155,12 +155,18 @@ export default {
       message: 'hello',
       type: 'success'
     })
-    xj_notification({
+    this.$store.dispatch('xj_notification/xjNotification', {
       title: 'hello',
       message: 'hello',
       type: 'success',
       location: 'right-bottom'
     })
+    // xj_notification({
+    //   title: 'hello',
+    //   message: 'hello',
+    //   type: 'success',
+    //   location: 'right-bottom'
+    // })
   }
 }
 </script>
@@ -176,6 +182,7 @@ export default {
     <button @click="xj_notification(notificationOption[1])">呼出弹窗2</button>
     <button @click="xj_notification(notificationOption[2])">呼出弹窗3</button>
     <button @click="xj_notification(notificationOption[3])">呼出弹窗4</button>
+    <p>123123123</p>
     <xj-dialog
       :visible.sync="show"
       title="title"

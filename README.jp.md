@@ -74,3 +74,42 @@ message の本文は選択できません。
 現在の進行状況が残っています: then() メソッドはコールバック関数の実行値を返します。
 notification Vuex への転送
 ```
+
+**2023-10-16**
+
+```
+notification のリファクタリングを完了する
+```
+
+新しい notification の使用方法:
+1. 新しい notification  を作成する
+
+   構成オブジェクトを渡します。オブジェクトのプロパティには次のものが含まれます。
+
+   ```
+   @param {string} title タイトル オプション
+   @param {string} message メッセージ 必須。
+   @param {string} type タイプ オプション デフォルトは正常です。他の値には成功、警告、エラーが含まれます。
+   @param {string} location 位置 オプション. デフォルトは「left-bottom」で、他の値には「left-top right-top right-bottom left-bottom-1...」が含まれます。
+   @param {number} duration 間隔 デフォルトは 3000 です。0 の場合、自動的にオフになりません。 0 を除く最小値は 1000 です。
+   @param {boolean} showClose 表示閉じる 手動で閉められるかどうか。デフォルトは true です。オンにすると、マウスを移動すると自動シャットダウンのタイミングが停止します。
+   @param {boolean} userSelect Whether to restrict text selection. The default is true, which disables text selection
+   @param {Function} callback A callback function that runs when the notification box is clicked. The callback receives a parameter in the notification position.
+   ```
+
+   ```js
+   const notification = new Notification(option)
+   ```
+
+2. 利用可能な方法は次のとおりです：
+
+   ```js
+   /* 位置に 3 つの値 (left-bottom-1 など) がある場合、それは絶対位置であり、動的な通知位置管理には参加しません。 setLocation メソッドを使用して場所を変更できます。 */
+   notification.setLocation(number)
+   
+   /* コールバックが渡されると、then() メソッドを使用してコールバックの戻り値を取得できます。 */
+   notification.then(Function)
+   
+   /* 通知を閉じるために使用されます */
+   notification.close()
+   ```

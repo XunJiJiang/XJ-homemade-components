@@ -73,3 +73,42 @@ Refactor notification.
 Current progress remaining: the then() method returns the running value of the callback function
 notification Transfer to Vuex
 ```
+
+**2023-10-16**
+
+```
+Complete notification refactoring
+```
+
+How to use the new notification:
+1. Create a new notification
+
+   Pass in the configuration object, the object properties include:
+
+   ```
+   @param {string} title Optional.
+   @param {string} message Required.
+   @param {string} type Optional. The default is normal, other values include success, warning, and error.
+   @param {string} location Optional. The default is left-bottom, other values include left-top right-top right-bottom left-bottom-1...
+   @param {number} duration. The default is 3000. If it is 0, it will not be turned off automatically. Except for 0, the minimum value is 1000.
+   @param {boolean} showClose. Whether it can be closed manually. The default is true. When turned on, moving the mouse over will stop the automatic shutdown timing.
+   @param {boolean} userSelect Whether to restrict text selection. The default is true, which disables text selection
+   @param {Function} callback A callback function that runs when the notification box is clicked. The callback receives a parameter in the notification position.
+   ```
+
+   ```js
+   const notification = new Notification(option)
+   ```
+
+2. Available methods include：
+
+   ```js
+   /* When location has three values, such as left-bottom-1, it is absolute positioning and does not participate in dynamic notification location management. The setLocation method can be used to modify the location. */
+   notification.setLocation(number)
+   
+   /* When callback is passed in, you can use the then() method to get the return value of callback */
+   notification.then(Function)
+   
+   /* Used to close notification */
+   notification.close()
+   ```
