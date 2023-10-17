@@ -12,7 +12,7 @@
   height: 77px;
   z-index: 2000;
   position: fixed;
-  background-color: rgb(255, 255, 255);
+  //background-color: rgb(255, 255, 255);
   padding: 14px 16px 14px 13px;
   border: 2px solid;
   border-radius: 8px;
@@ -20,13 +20,15 @@
   box-sizing: border-box;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
   transition: all .4s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 
   div {
     transition: all .4s;
   }
 
   .xj-notification-title {
-    color: rgb(48, 49, 51);
+    //color: rgb(48, 49, 51);
     height: 21px;
     font-size: 16px;
     font-weight: 700;
@@ -34,7 +36,7 @@
   }
 
   .xj-notification-message {
-    color: rgb(96, 98, 102);
+    //color: rgb(96, 98, 102);
     font-size: 14px;
     height: 21px;
     font-weight: 400;
@@ -44,65 +46,29 @@
   }
 }
 
+
 .xj-notification-success {
-  border-color: rgb(153, 230, 115);
+  border-color: rgba(153, 230, 115, 0);
+  background-color: rgba(153, 230, 115, .7);
+  color: #212121;
 }
 
 .xj-notification-warning {
-  border-color: rgb(255, 203, 125);
+  border-color: rgba(255, 203, 125, 0);
+  background-color: rgba(255, 203, 125, .7);
+  color: #212121;
 }
 
 .xj-notification-error {
-  border-color: rgb(245, 108, 108);
+  border-color: rgba(245, 108, 108, 0);
+  background-color: rgba(245, 108, 108, .7);
+  color: #212121;
 }
 
 .xj-notification-normal {
-  border-color: rgb(235, 238, 245);
-}
-
-//.xj-notification-left {
-//  margin-left: -350px;
-//  opacity: 0;
-//}
-
-//.xj-notification-left-appear {
-//  margin-left: 16px;
-//  opacity: 1;
-//}
-
-//.xj-notification-left-disappear {
-//  height: 0px;
-//  opacity: 0;
-//  margin: 0 0;
-//  border-width: 0px;
-//  padding: 0px 16px 0px 0px;
-//}
-
-//.xj-notification-right {
-//  opacity: 0;
-//}
-
-//.xj-notification-right-appear {
-//  opacity: 1;
-//  margin-left: -350px;
-//}
-
-//.xj-notification-right-disappear {
-//  height: 0px;
-//  opacity: 0;
-//  margin: 0px;
-//  border-width: 0px;
-//  margin-left: -334px;
-//  padding: 0px 0px 0px 14px;
-//}
-
-.xj-notification-countdown {
-  position: absolute;
-  bottom: 0;
-  width: 0;
-  height: 3px;
-  left: 0;
-  //opacity: 0;
+  border-color: rgba(235, 238, 245, 0);
+  background-color: rgba(235, 238, 245, .7);
+  color: #212121;
 }
 
 .xj-notification-close.icon {

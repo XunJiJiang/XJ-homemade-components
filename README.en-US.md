@@ -112,3 +112,9 @@ How to use the new notification:
    /* Used to close notification */
    notification.close()
    ```
+   
+   
+**2023-10-17**
+```
+notification Refactoring completed, fix bugs, redraw styles
+```

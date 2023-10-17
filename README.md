@@ -108,3 +108,8 @@ notification 转移至 vuex
    /* 用于关闭 notification  */
    notification.close()
    ```
+   
+**2023-10-17**
+```
+notification 重构完成，修改bug，重绘样式
+```

@@ -1,4 +1,4 @@
-import './xj-notification.less'
+import './index.less'
 import { v4 as uuidV4 } from 'uuid'
 // import xj_console from '../console'
 // import message from '../message'
@@ -52,9 +52,9 @@ class NotificationList {
 
 class Notification {
   // only read:number px
-  static #rootHeight = 93
+  static #ROOT_HEIGHT = 93
   // only read:number px
-  static #rootWidth = 363
+  static #ROOT_WIDTH = 363
 
   /* 是否接入通知列表 NotificationList */
   #isAccessList
@@ -65,28 +65,23 @@ class Notification {
   /* 通知栏 根div: HTMLDivElement */
   #rootBox
 
-  /* 倒计时进度条 div: HTMLDivElement */
-  #countdownDiv
-
   /* 关闭按钮 */
   #closeSvg = null
 
   /*
    * 通知栏 rootBox: String
-   * 倒计时进度条 countdownDiv: String
    */
   #uuid = {
-    rootBox: '',
-    countdownDiv: ''
+    rootBox: ''
   }
 
   /* 只读 通知栏样式 */
-  #boxStyle = {
-    success: { 'background-color': 'rgba(153, 230, 115, .7)' },
-    warning: { 'background-color': 'rgba(255, 203, 125, .7)' },
-    error: { 'background-color': 'rgba(245, 108, 108, .7)' },
-    normal: { 'background-color': 'rgba(0, 0, 0, .5)' }
-  }
+  // #boxStyle = {
+  //   success: { 'background-color': 'rgba(153, 230, 115, .7)' },
+  //   warning: { 'background-color': 'rgba(255, 203, 125, .7)' },
+  //   error: { 'background-color': 'rgba(245, 108, 108, .7)' },
+  //   normal: { 'background-color': 'rgba(0, 0, 0, .5)' }
+  // }
 
   /* 通知栏坐标
    * {'left | right': number, 'top | bottom': number, ranking: number}
@@ -105,8 +100,8 @@ class Notification {
     resolve: null,
     reject: null
   }
-  /* 记录callback被触发 */
-  #isClick = false
+  /* 是否被关闭 */
+  #isClose = false
 
   /**
    * notification 通知弹窗
@@ -200,20 +195,10 @@ class Notification {
     this.#rootBox = document.createElement('div')
     this.#rootBox.id = this.#uuid['rootBox']
     this.#rootBox.classList.add('xj-notification')
-    this.#rootBox.classList.add()
+    this.#rootBox.classList.add(`xj-notification-${ type }`)
     this.#rootBox.style.transformOrigin = 'center center'
     userSelect && (this.#rootBox.style['cursor'] = 'default')
     userSelect && (this.#rootBox.style['userSelect'] = 'none')
-    /* 倒计时进度条 div */
-    if (duration !== 0) {
-      this.#uuid['countdownDiv'] = uuidV4()
-      this.#countdownDiv = document.createElement('div')
-      this.#countdownDiv.id = this.#uuid['countdownDiv']
-      this.#countdownDiv.classList.add('xj-notification-countdown')
-      this.#countdownDiv.style['background-color'] = this.#boxStyle[type]['background-color'] || this.#boxStyle['normal']['background-color']
-      this.#countdownDiv.style['transition'] = `all ${ duration / 1000 }s linear`
-      this.#rootBox.appendChild(this.#countdownDiv)
-    }
     /* 标题 div */
     if (title) {
       const titleBox = document.createElement('div')
@@ -260,8 +245,8 @@ class Notification {
    */
   #positionInitialization (location, callback) {
     typeof location[2] === 'undefined' ? (this.#location['ranking'] = this.#ranking[location[0] + '-' + location[1]]) : this.#location['ranking'] = location[2]
-    this.#location[location[0]] = - Notification.#rootWidth // px
-    this.#location[location[1]] = 16 + (this.#location['ranking'] - 1) * Notification.#rootHeight // px
+    this.#location[location[0]] = - Notification.#ROOT_WIDTH // px
+    this.#location[location[1]] = 16 + (this.#location['ranking'] - 1) * Notification.#ROOT_HEIGHT // px
     this.#rootBox.style[location[0]] = this.#location[location[0]] + 'px'
     this.#rootBox.style[location[1]] = this.#location[location[1]] + 'px'
     document.body.appendChild(this.#rootBox)
@@ -285,40 +270,31 @@ class Notification {
    * @param {[string, string, number | undefined]} location 位置 left-top right-top right-bottom left-bottom-1...
    */
   #setLocation (location) {
-    const _oldLocation = this.#location
+    const _oldLocation = JSON.parse(JSON.stringify(this.#location))
     /* 设置 notification 位置 */
     !location[2] && (location[2] = this.#ranking[location[0] + '-' + location[1]])
     /* 设置位置 */
     this.#location[location[0]] = 18 // px
-    this.#location[location[1]] = 16 + (location[2] - 1) * Notification.#rootHeight // px
-    this.#locationUpdate(_oldLocation, 300)
+    this.#location[location[1]] = 16 + (location[2] - 1) * Notification.#ROOT_HEIGHT // px
+    this.#locationUpdate(_oldLocation)
   }
 
   /**
    * 带过渡的位置更新
    * @param {{'left | right': number, 'top | bottom': number}} _oldLocation 旧的位置
-   * @param {number} operationHours 运行时间 ms
    */
-  #locationUpdate (_oldLocation, operationHours) {
-    const _nowLocation = _oldLocation
+  #locationUpdate (_oldLocation) {
+    const _nowLocation = JSON.parse(JSON.stringify(_oldLocation))
     const _change = {}
     for (let key in _oldLocation) {
       if (key === 'ranking') continue
       _change[key] = this.#location[key] - _oldLocation[key]
     }
-    let _over = false
     const _run = () => {
       for (let key in _nowLocation) {
         if (key === 'ranking') continue
-        if ((this.#location[key] - _oldLocation[key] >= 0 && this.#location[key] - _nowLocation[key] < 1) || (this.#location[key] - _oldLocation[key] <= 0 && this.#location[key] - _nowLocation[key] > 1)) {
-          this.#rootBox.style[key] = this.#location[key] + 'px'
-          _over = true
-        } else {
-          _nowLocation[key] += _change[key] / operationHours
-          this.#rootBox.style[key] = _nowLocation[key] + 'px'
-        }
+        this.#rootBox.style[key] = this.#location[key] + 'px'
       }
-      !_over && requestAnimationFrame(_run)
     }
     requestAnimationFrame(_run)
   }
@@ -330,15 +306,14 @@ class Notification {
   #remove (location) {
     this.#timeout['close'] && clearTimeout(this.#timeout['close'])
     this.#timeout['close'] = null
-    const _oldLocation = this.#location
-    this.#isAccessList ? (this.#location['ranking'] = this.#ranking[location[0] + '-' + location[1]]) : this.#location['ranking'] = location[2]
-    this.#location[location[0]] = - Notification.#rootWidth // px
-    this.#location[location[1]] = 16 + (this.#location['ranking'] - 1) * Notification.#rootHeight // px
-    // this.#rootBox.style[location[0]] = this.#location[location[0]] + 'px'
-    // this.#rootBox.style[location[1]] = this.#location[location[1]] + 'px'
-    this.#locationUpdate(_oldLocation, 300)
+    const _oldLocation = JSON.parse(JSON.stringify(this.#location))
+    this.#location['ranking'] = this.#ranking[location[0] + '-' + location[1]]
+    this.#location[location[0]] = - Notification.#ROOT_WIDTH // px
+    this.#location[location[1]] = 16 + (this.#location['ranking'] - 1) * Notification.#ROOT_HEIGHT // px
+    this.#locationUpdate(_oldLocation)
     if (this.#isAccessList) NotificationList.setLength([location[0], location[1], this.#ranking[location[0] + '-' + location[1]]], 'reduce', this)
     this.#deleteEvent()
+    this.#isClose = true
     setTimeout(() => {
       this.#rootBox.remove()
     }, 300)
@@ -370,7 +345,7 @@ class Notification {
       mousedown: (e) => {
         if (e.target.classList.contains('xj-notification-close')) return
         this.#rootBox.style['transition-duration'] = '.1s'
-        this.#rootBox.style['transform'] = 'scale(95%)'
+        this.#rootBox.style['transform'] = 'scale(105%)'
       },
       mouseup: () => {
         this.#rootBox.style['transition-duration'] = '.4s'
@@ -389,24 +364,25 @@ class Notification {
     }
   }
 
-    /**
+  /**
    * 处理回调函数的运行
    * @param {Function} callback
+   * @return {null}
    */
   async #runCallback (callback) {
     let _v = null
-      const _l = {}
-      for (let key in this.#ranking) {
-        _l['location'] = key.split('-')
-        _l['ranking'] = this.#ranking[key]
-      }
+    const _l = {}
+    for (let key in this.#ranking) {
+      _l['location'] = key.split('-')
+      _l['ranking'] = this.#ranking[key]
+    }
 
     this.#callbackP['resolve'](await callback(_l))
     await this.#callbackP['Promise'].then(v => {
       _v = v
     })
 
-    this.#then(_v)
+    this.#then && this.#then(_v)
   }
 
   /* 保存生成的事件 */
@@ -437,27 +413,33 @@ class Notification {
     }
   }
 
-    /**
+  /**
    * 提供给 NotificationList 使用的，用于修改通知位置的方法
    * @param {number} ranking 新位置
    */
   setLocation (ranking) {
+    if (this.#isClose) {
+      console.warn('[WARN]', 'Notification => 通知已关闭, setLocation 方法被拒绝')
+      return
+    }
     if (this.#isAccessList) {
       console.error('[ERROR]', 'Notification => 该通知没有启用自定义定位, 不能使用 setLocation 修改位置', this)
       return 'Notification => 该通知没有启用自定义定位, 不能使用 setLocation 修改位置'
     }
+    console.log(this.#rootBox)
     let _l = []
     for (let key in this.#ranking) {
       _l = key.split('-')
-
     }
     _l.push(ranking)
-    this.#ranking[_l[0] + '-' + _l[1]] = ranking
+    console.log('前', this.#location)
+    this.#location['ranking'] = this.#ranking[_l[0] + '-' + _l[1]] = ranking
+    console.log('后', this.#location)
     this.#setLocation(_l)
   }
 
-  /* 保存then传入的函数: List */
-  #then
+  /* 保存then传入的函数: Function */
+  #then = null
 
   /**
    * sCallback 用于处理 callback 的返回值
@@ -465,6 +447,10 @@ class Notification {
    * @param {Function} sCallback
    */
   then (sCallback) {
+    if (this.#isClose) {
+      console.warn('[WARN]', 'Notification => 通知已关闭, then 方法被拒绝')
+      return
+    }
     if (!this.#callbackP['Promise']) {
       console.error('[ERROR]', 'Notification => 该通知没有传入 callback 回调函数, 不能使用 then 获取返回值', this)
       return 'Notification => 该通知没有传入 callback 回调函数, 不能使用 then 获取返回值'
@@ -476,6 +462,10 @@ class Notification {
    * 关闭 notification
    */
   close () {
+    if (this.#isClose) {
+      console.warn('[WARN]', 'Notification => 通知已关闭, close 方法被拒绝')
+      return
+    }
     let _l = []
     for (let key in this.#ranking) {
       _l = key.split('-')
@@ -490,9 +480,9 @@ export default {
   actions: {
     'xjNotification' (context, v) {
       const a = new Notification(v)
-      a.then(v => {
-        console.log('then1', v)
-      })
+      // a.then(v => {
+      //   console.log('then1', v)
+      // })
       for (let i = 1; i <= 10; ++i) {
         setTimeout(() => {
           a.setLocation(i)

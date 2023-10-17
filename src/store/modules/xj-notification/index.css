@@ -10,7 +10,6 @@
   height: 77px;
   z-index: 2000;
   position: fixed;
-  background-color: #ffffff;
   padding: 14px 16px 14px 13px;
   border: 2px solid;
   border-radius: 8px;
@@ -18,19 +17,19 @@
   box-sizing: border-box;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, SimSun, sans-serif;
   transition: all 0.4s;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .xj-notification div {
   transition: all 0.4s;
 }
 .xj-notification .xj-notification-title {
-  color: #303133;
   height: 21px;
   font-size: 16px;
   font-weight: 700;
   margin: 0 8px 6px 13px;
 }
 .xj-notification .xj-notification-message {
-  color: #606266;
   font-size: 14px;
   height: 21px;
   font-weight: 400;
@@ -39,23 +38,24 @@
   text-align: justify;
 }
 .xj-notification-success {
-  border-color: #99e673;
+  border-color: rgba(153, 230, 115, 0);
+  background-color: rgba(153, 230, 115, 0.7);
+  color: #212121;
 }
 .xj-notification-warning {
-  border-color: #ffcb7d;
+  border-color: rgba(255, 203, 125, 0);
+  background-color: rgba(255, 203, 125, 0.7);
+  color: #212121;
 }
 .xj-notification-error {
-  border-color: #f56c6c;
+  border-color: rgba(245, 108, 108, 0);
+  background-color: rgba(245, 108, 108, 0.7);
+  color: #212121;
 }
 .xj-notification-normal {
-  border-color: #ebeef5;
-}
-.xj-notification-countdown {
-  position: absolute;
-  bottom: 0;
-  width: 0;
-  height: 3px;
-  left: 0;
+  border-color: rgba(235, 238, 245, 0);
+  background-color: rgba(235, 238, 245, 0.7);
+  color: #212121;
 }
 .xj-notification-close.icon {
   width: 1em;
@@ -82,4 +82,4 @@
 .xj-notification-close.xj-icon-close:hover {
   background-color: #fd4356;
 }
-/*# sourceMappingURL=xj-notification.css.map */
+/*# sourceMappingURL=index.css.map */
