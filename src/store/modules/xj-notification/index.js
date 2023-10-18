@@ -1,6 +1,4 @@
 import './index.less'
-// import xj_console from '../console'
-// import message from '../message'
 
 class NotificationList {
   static #length = {
@@ -67,14 +65,6 @@ class Notification {
   /* 关闭按钮 */
   #closeSvg = null
 
-
-  /* 只读 通知栏样式 */
-  // #boxStyle = {
-  //   success: { 'background-color': 'rgba(153, 230, 115, .7)' },
-  //   warning: { 'background-color': 'rgba(255, 203, 125, .7)' },
-  //   error: { 'background-color': 'rgba(245, 108, 108, .7)' },
-  //   normal: { 'background-color': 'rgba(0, 0, 0, .5)' }
-  // }
 
   /* 通知栏坐标
    * {'left | right': number, 'top | bottom': number, ranking: number}
