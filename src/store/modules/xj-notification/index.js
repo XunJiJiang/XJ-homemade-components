@@ -1,5 +1,4 @@
 import './index.less'
-import { v4 as uuidV4 } from 'uuid'
 // import xj_console from '../console'
 // import message from '../message'
 
@@ -68,12 +67,6 @@ class Notification {
   /* 关闭按钮 */
   #closeSvg = null
 
-  /*
-   * 通知栏 rootBox: String
-   */
-  #uuid = {
-    rootBox: ''
-  }
 
   /* 只读 通知栏样式 */
   // #boxStyle = {
@@ -191,9 +184,7 @@ class Notification {
    */
   #create (title, message, type, duration, showClose, userSelect) {
     // 创建 notification 盒子
-    this.#uuid['rootBox'] = uuidV4()
     this.#rootBox = document.createElement('div')
-    this.#rootBox.id = this.#uuid['rootBox']
     this.#rootBox.classList.add('xj-notification')
     this.#rootBox.classList.add(`xj-notification-${ type }`)
     this.#rootBox.style.transformOrigin = 'center center'
