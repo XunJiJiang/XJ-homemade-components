@@ -147,7 +147,7 @@ export default {
       done()
     },
     xj_notification (v) {
-      this.$store.dispatch('xj_notification/xjNotification', v)
+      this.$xjNotify(v)
     }
   },
   mounted () {
@@ -155,7 +155,7 @@ export default {
       message: 'hello',
       type: 'success'
     })
-    this.$store.dispatch('xj_notification/xjNotification', {
+    this.$xjNotify({
       title: 'hello',
       message: 'hello',
       type: 'success',

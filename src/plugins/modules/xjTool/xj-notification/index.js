@@ -456,25 +456,4 @@ class Notification {
   }
 }
 
-export default {
-  namespaced: true,
-  actions: {
-    'xjNotification' (context, v) {
-      const a = new Notification(v)
-      // a.then(v => {
-      //   console.log('then1', v)
-      // })
-      for (let i = 1; i <= 10; ++i) {
-        setTimeout(() => {
-          a.setLocation(i)
-        }, i * 400)
-      }
-      // setTimeout(() => {
-      //   a.close()
-      // }, 10000)
-    }
-  },
-  state: {
-    notification: []
-  }
-}
+export default Notification
