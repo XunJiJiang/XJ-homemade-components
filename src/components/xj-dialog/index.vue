@@ -448,6 +448,7 @@ export default {
 @import "./assets/iconfont.css";
 #dialog {
   position: fixed;
+  z-index: 1500;
   top: 0;
   left: 0;
   height: 0;
