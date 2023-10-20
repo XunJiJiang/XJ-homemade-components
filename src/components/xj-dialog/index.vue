@@ -1,5 +1,4 @@
 <script>
-import { v4 as uuidv4 } from 'uuid';
 export default {
   name: 'xj-dialog',
   props: {
@@ -67,7 +66,6 @@ export default {
   },
   data () {
     return {
-      uuid: uuidv4(),
       visibleData: false,
       animation: {
         nowLocation: {},
