@@ -118,3 +118,17 @@ How to use the new notification:
 ```
 notification Refactoring completed, fix bugs, redraw styles
 ```
+
+**2023-10-27**
+```
+Notification adds a catch method to handle the situation where the callback function is not triggered.
+The method passed in by the catch method passes an object when called
+{
+  message: string,
+  code: number // 0: The timer for closing ends; 1: The user clicks the close button; 2: The close method is called to close
+}
+
+Added new loading animation
+
+Add voting list (not completed)
+```

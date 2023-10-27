@@ -113,3 +113,17 @@ notification 转移至 vuex
 ```
 notification 重构完成，修改bug，重绘样式
 ```
+
+**2023-10-27**
+```
+notification 添加catch方法，用于处理callback函数未触发的情况
+由catch方法传入的方法，在被调用时传入一个对象
+{
+  message: string,
+  code: number // 0: 关闭计时结束; 1: 用户点击关闭按钮; 2: close 方法关闭
+}
+
+新增加载动画
+
+新增投票列表(未完成)
+```

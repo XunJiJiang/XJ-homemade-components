@@ -318,6 +318,7 @@ class Notification {
         this.#timeout['close'] && clearTimeout(this.#timeout['close'])
         this.#timeout['close'] = null
         duration !== 0 && (this.#timeout['close'] = setTimeout(() => {
+          this.#callbackP['Promise'] && this.#nRunCallback('[MESSAGE], Notification => 该通知在倒计时结束后被关闭而没有调用 callback 回调函数', 0)
           this.#remove(location)
         }, duration))
         this.#rootBox.style['transition-duration'] = '.4s'
@@ -334,6 +335,7 @@ class Notification {
       },
       click: (e) => {
         if (e.target.classList.contains('xj-notification-close') && showClose) {
+          if (callback) this.#nRunCallback('[MESSAGE], Notification => 该通知通过点击关闭按钮关闭而没有调用 callback 回调函数', 1)
           this.#remove(location)
           return
         }
@@ -364,6 +366,22 @@ class Notification {
     })
 
     this.#then && this.#then(_v)
+  }
+
+  /**
+   * 通知被关闭但是没有运行 Callback
+   * @param {string} err 错误信息
+   * @param {0|1|2} errCode 错误代码 0: 关闭计时结束; 1: 用户点击关闭按钮; 2: close 方法关闭
+   * @returns {null}
+   */
+  async #nRunCallback (err, errCode) {
+    let _err = {}
+    if (!this.#catch) return
+    this.#callbackP['reject']({message: err, code: errCode})
+    await this.#callbackP['Promise'].catch(err => {
+      _err = err
+    })
+    this.#catch && this.#catch(_err)
   }
 
   /* 保存生成的事件 */
@@ -407,20 +425,19 @@ class Notification {
       console.error('[ERROR]', 'Notification => 该通知没有启用自定义定位, 不能使用 setLocation 修改位置', this)
       return 'Notification => 该通知没有启用自定义定位, 不能使用 setLocation 修改位置'
     }
-    console.log(this.#rootBox)
     let _l = []
     for (let key in this.#ranking) {
       _l = key.split('-')
     }
     _l.push(ranking)
-    console.log('前', this.#location)
     this.#location['ranking'] = this.#ranking[_l[0] + '-' + _l[1]] = ranking
-    console.log('后', this.#location)
     this.#setLocation(_l)
   }
 
   /* 保存then传入的函数: Function */
   #then = null
+  /* 保存catch传入的函数: Function */
+  #catch = null
 
   /**
    * sCallback 用于处理 callback 的返回值
@@ -436,7 +453,21 @@ class Notification {
       console.error('[ERROR]', 'Notification => 该通知没有传入 callback 回调函数, 不能使用 then 获取返回值', this)
       return 'Notification => 该通知没有传入 callback 回调函数, 不能使用 then 获取返回值'
     }
+    if (this.#then) {
+      console.warn('[WARN]', 'Notification => 该通知已使用 then 函数, 再次使用将会覆盖之前的内容', this)
+    }
     this.#then = sCallback
+    return {
+      catch: (errCallback) => this.catch(errCallback)
+    }
+  }
+
+  /**
+   * 运行 callback 时运行的函数
+   * @param {string} errCallback
+   */
+  catch (errCallback) {
+    this.#catch = errCallback
   }
 
   /**
@@ -452,6 +483,7 @@ class Notification {
       _l = key.split('-')
       _l[2] = this.#ranking[key]
     }
+    this.#callbackP['Promise'] && this.#nRunCallback('[MESSAGE], Notification => 该通知被暴露的 close 方法关闭而没有调用 callback 回调函数', 2)
     this.#remove(_l)
   }
 }
