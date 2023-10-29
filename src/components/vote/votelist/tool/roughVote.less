@@ -13,36 +13,39 @@
   // overflow: hidden;
   transition: all .6s;
   cursor: pointer;
-  background-color: var(--backgroundC);
+  //background-color: var(--backgroundC);
   box-sizing: border-box;
 
-  &.mobile {
+  &.xj-mobile {
     height: 156px;
   }
 
-  &:hover {
-    background-color: var(--backgroundCH);
-  }
+  //&:hover {
+  //  background-color: var(--backgroundCH);
+  //}
 
   .xj-rough-vote-main {
     padding: 15px;
     height: 46px;
+    position: relative;
+    background-color: var(--backgroundC);
+    border-radius: 30px;
     transition: all .3s;
 
-    &.mobile {
+    &.xj-mobile {
       height: 126px;
     }
 
     .xj-rough-vote-title {
       height: 21px;
-      width: calc(80% - 26px - 150px);
+      width: calc(80% - 50px);
       font-size: 16px;
       font-weight: 700;
       margin: 0 13px 6px 13px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      &.mobile {
+      &.xj-mobile {
         margin: 10px 13px 6px 0;
         font-size: 20px;
       }
@@ -51,7 +54,7 @@
     .xj-rough-vote-content {
       font-size: 14px;
       height: 21px;
-      width: calc(80% - 52px);
+      width: 100%;
       line-height: 21px;
       margin: 0 13px;
       text-align: justify;
@@ -59,11 +62,11 @@
       overflow: hidden;
       text-overflow: ellipsis;
 
-      &.mobile {
+      &.xj-mobile {
         display:-webkit-box;
         margin: 28px 0;
         height: 60px;
-        width: calc(80% - 26px);
+        width: 100%;
         white-space: normal;
         word-wrap: break-word;
         -webkit-line-clamp: 3;
@@ -78,7 +81,7 @@
       top: 5px;
       right: 20px;
       color: #000000b2;
-      &.mobile {
+      &.xj-mobile {
 
       }
     }
@@ -89,18 +92,35 @@
       position: absolute;
       top: 24px;
       right: 20px;
-      &.mobile {
+      &.xj-mobile {
         top: 30px;
       }
     }
-
   }
 
   .xj-rough-vote-button {
-    &.mobile {
+    width: 0;
+    height: 76px;
+    top: 0;
+    opacity: 0;
+    position: absolute;
+    border-radius: 30px;
+    transition: background-color .1s, color .1s;
+    background-color: var(--backgroundC);
+    right: 0;
+    text-align: center;
+    line-height: 76px;
+    white-space: nowrap;
+    font-size: 20px;
+    // font-weight: 700;
+    overflow: hidden;
 
+    &.xj-mobile {
+      height: 156px;
+      line-height: 156px;
     }
   }
+
 
 
 }

@@ -5,8 +5,88 @@
   position: absolute;
   top: calc(100% + 10px);
   overflow: hidden;
-  //box-shadow: 0 0 5px #000000b2;
-  background-color: #00000033;
+  box-shadow: 0 0 10px #00000005 inset;
+  background-color: #00000010;
   transition: all .6s;
   opacity: 0;
+
+  .xj-details-vote-title {
+    //height: 21px;
+    width: calc(90% - 20px);
+    position: absolute;
+    //left: 2%;
+    //top: 2%;
+    box-shadow: 0 0 10px #00000033;
+    //border-radius: 15px;
+    padding: 2% calc(3% + 20px) 2% 7%;
+    font-size: 16px;
+    font-weight: 700;
+    word-break: break-word;
+
+    .xj-details-vote-close {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      //transform: scale(.8);
+      right: 2%;
+      top: 18%;
+      //padding: 5px;
+      border-radius: 10px;
+      //box-shadow: 0 0 10px #00000033;
+      transition: all .15s;
+      cursor: pointer;
+      background-color: #d5322f;
+      color: #ffffff00;
+      text-align: center;
+      line-height: 20px;
+      transform: scale(80%);
+
+      &:hover {
+        //background-color: #d5322f;
+        color: #ffffff;
+      }
+    }
+  }
+
+  .xj-details-vote-main {
+    position: relative;
+    top: 4%;
+    left:2%;
+    width: 94%;
+    padding: 1%;
+
+    .xj-details-vote-content {
+
+    }
+
+    .xj-details-vote-options{
+      margin: 0 10%;
+
+      .xj-details-vote-option {
+        cursor: pointer;
+        height: 28px;
+        line-height: 28px;
+        margin-top: 3%;
+        background-color: #00000005;
+        transition: all .15s;
+        border-radius: 3px;
+        border: 1px solid #00000022;
+
+        & p {
+          margin: 0;
+          padding: 0 16px;
+        }
+
+        &:hover {
+          background-color: #ffffff;
+          border-color: #6ce2fc;
+        }
+      }
+    }
+  }
 }
+
+
+@import "../../assets/iconfont.css";
+

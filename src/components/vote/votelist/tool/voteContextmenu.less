@@ -1,0 +1,32 @@
+.xj-contextmenu {
+  display: none;
+  position: fixed;
+  background-color: rgba(235, 238, 245, .7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+  box-sizing: border-box;
+  transition: all .2s;
+  opacity: 0;
+  z-index: 20000;
+
+  &.xj-mobile {
+
+  }
+
+  .xj-contextmenu-menu {
+    height: 20px;
+    margin: 4px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    background-color: #00000000;
+    line-height: 20px;
+    transition: all .2s;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #00000022;
+    }
+  }
+}

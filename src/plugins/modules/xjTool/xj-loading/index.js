@@ -37,16 +37,15 @@ class Loading extends LoadingInfo {
 
   addLoading () {
     requestAnimationFrame(() => {
-      // this._loading.style['transform'] = 'scaleY(1)'
+      // this._loading.style['transform'] = 'scaleX(1)'
       this._loading.style['opacity'] = '1'
     })
     this._div.appendChild(this._loading)
   }
 
   removeLoading () {
-    console.log('run')
     requestAnimationFrame(() => {
-      // this._loading.style['transform'] = 'scaleY(.5)'
+      // this._loading.style['transform'] = 'scaleX(0)'
       this._loading.style['opacity'] = '0'
     })
     setTimeout(() => {

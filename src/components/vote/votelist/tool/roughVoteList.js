@@ -3,6 +3,7 @@
  */
 import VoteRough from './createRoughVote'
 import VoteDetailsWindow from './voteDetailsWindow'
+import VoteContextmenu from './voteContextmenu'
 import Loading from '@/plugins/modules/xjTool/xj-loading'
 
 
@@ -30,7 +31,7 @@ const scroll = (e) => {
 class VoteRoughList extends RoughListInfo {
   /**
    * @param {HTMLDivElement} RoughList 列表元素 div
-   * @param {[]} voteInfos 全部投票粗略信息
+   * @param {[{createTime: string, deadTime: string, voteId: number, title: string, userName: string, userId: number, content: string, status: number}]} voteInfos 全部投票粗略信息
    * @param {'desktop'|'mobile'} equipment 设备类型
    */
   constructor (RoughList, voteInfos, equipment = 'desktop') {
@@ -83,11 +84,11 @@ class VoteRoughList extends RoughListInfo {
    * @return null
    */
   async _nodeClick (ranking, voteInfo) {
-    window.addEventListener('mousewheel', scroll, {passive: false})
-    window.addEventListener('touchmove', scroll, {passive: false})
+    // window.addEventListener('mousewheel', scroll, {passive: false})
+    window.addEventListener('touchmove', scroll, { passive: false })
     document.body.style['overflow-y'] = 'hidden'
     console.log(this._voteNode[ranking - 1].voteNodeMain)
-    const _loading = new Loading(this._voteNode[ranking - 1].voteNodeMain, '#3e3f41')
+    const _loading = new Loading(this._voteNode[ranking - 1].voteNodeMain, '#b0b8c0')
     _loading.addLoading()
     const num = Math.floor(window.innerHeight / this._ROUGH_HEIGHT)
     // 遍历点击节点和附近节点 去除监听
@@ -130,12 +131,23 @@ class VoteRoughList extends RoughListInfo {
     }
   }
 
+
+  /**
+   * 提供一个上下文菜单
+   * @param {{equipment: 'desktop'|'mobile', contextmenuList: List<{'message': string, 'onclick': Function}>}} info
+   * @returns {VoteContextmenu}
+   * @private
+   */
+  _contextmenu (info) {
+    return new VoteContextmenu({...info, equipment: this.equipment})
+  }
+
   /**
    * 投票节点点击结束关闭详细信息
    */
   nodeClickFinish () {
     const { ranking } = this.#clickVoteInfo
-    window.removeEventListener('mousewheel', scroll)
+    // window.removeEventListener('mousewheel', scroll)
     window.removeEventListener('touchmove', scroll)
     document.body.style['overflow-y'] = 'scroll'
 
@@ -163,6 +175,16 @@ class VoteRoughList extends RoughListInfo {
    */
   addVotes (voteInfos) {
     voteInfos
+  }
+
+  /**
+   * 销毁列表
+   */
+  destroyed () {
+    // window.removeEventListener('mousewheel', scroll)
+    window.removeEventListener('touchmove', scroll)
+    document.body.style['overflow-y'] = 'scroll'
+    this._RoughList.remove()
   }
 }
 

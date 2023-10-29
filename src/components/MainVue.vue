@@ -122,7 +122,7 @@ export default {
           location: 'right-top-2',
           duration: 0,
           userSelect: false,
-          async callback (l) {
+          async onclick (l) {
             console.log('@3 async callback 运行了', l)
             await new Promise(resolve => {
               setTimeout(() => {
@@ -137,7 +137,7 @@ export default {
           message: 'notification message测试-4',
           type: 'error',
           location: 'right-bottom',
-          async callback () {
+          async onclick () {
             console.log('@4 callback 运行了')
             return '@4 callback 运行 的返回值'
           }
@@ -324,16 +324,15 @@ export default {
     this.voteList = new VoteRoughList(this.$refs['vote-list'], this.voteData)
     this.voteList.onclick(({ voteId }) => {
       // return require.voteId(voteId)
-      voteId
       // 理论上这里返回应该发送的亲求
       return new Promise(resolve => {
         setTimeout(() => {
           resolve({
-            voteId: 0,
+            voteId,
             userName: '迅疾',
             voteType: 3,
-            title: '详细标题11111111111111111111111111111111111111aweaweqwe青蛙恶趣味啊是大多数·',
-            content: '详细介绍埃斯库嘎斯的空间噶噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律框架哈桑打开链接',
+            title: '详细标题1111111111111111111111111111aweaweqwe青蛙恶趣味啊是大多数·',
+            content: '详细介绍埃斯库嘎斯的空间详细介绍埃斯库嘎斯asdaqwe空qweqwe噶噶啥的客户嘎斯的空ferq细介qwe绍qwe埃斯库嘎斯的空间噶噶啥的客户嘎斯的空详细介绍埃斯库嘎斯的空间噶噶啥的客户嘎斯的空详细介绍埃斯库嘎斯的空间噶噶啥的客户嘎斯的空详细介绍埃斯库嘎斯的空间噶噶啥的客户嘎斯的空详细介绍埃斯库嘎斯的空间噶噶啥的客户嘎斯的空噶噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律噶啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律啥的客户嘎斯的空间和按时灯笼裤飞机哈桑法律框架哈桑打开链接',
             status: 1,
             createTime: '2023-10-03 19:20:24',
             deadTime: '2023-10-13 19:20:24',
@@ -342,47 +341,92 @@ export default {
             voteOptionLaunchDTOs: [
               {
                 id: 0,
-                voteId: 0,
+                voteId,
                 optionType: 'S',
                 content: '000',
                 percentage: '10%',
-                voteNum: 13,
+                voteNum: 10,
                 isSelect: false
               },
               {
                 id: 1,
-                voteId: 0,
+                voteId,
                 optionType: 'S',
                 content: '111',
-                percentage: '20%',
-                voteNum: 26,
+                percentage: '10%',
+                voteNum: 10,
                 isSelect: false
               },
               {
                 id: 2,
-                voteId: 0,
+                voteId,
                 optionType: 'S',
                 content: '222',
-                percentage: '40%',
-                voteNum: 52,
+                percentage: '10%',
+                voteNum: 10,
                 isSelect: false
               },
               {
                 id: 3,
-                voteId: 0,
+                voteId,
                 optionType: 'S',
                 content: '333',
-                percentage: '30%',
-                voteNum: 39,
+                percentage: '10%',
+                voteNum: 10,
                 isSelect: false
               },
               {
                 id: 4,
-                voteId: 0,
+                voteId,
                 optionType: 'S',
                 content: '444',
-                percentage: '50%',
-                voteNum: 52,
+                percentage: '10%',
+                voteNum: 10,
+                isSelect: false
+              },
+              {
+                id: 5,
+                voteId,
+                optionType: 'S',
+                content: '555',
+                percentage: '10%',
+                voteNum: 10,
+                isSelect: false
+              },
+              {
+                id: 6,
+                voteId,
+                optionType: 'S',
+                content: '666',
+                percentage: '10%',
+                voteNum: 10,
+                isSelect: false
+              },
+              {
+                id: 7,
+                voteId,
+                optionType: 'S',
+                content: '777',
+                percentage: '10%',
+                voteNum: 10,
+                isSelect: false
+              },
+              {
+                id: 8,
+                voteId,
+                optionType: 'S',
+                content: '888',
+                percentage: '10%',
+                voteNum: 10,
+                isSelect: false
+              },
+              {
+                id: 9,
+                voteId,
+                optionType: 'S',
+                content: '999',
+                percentage: '10%',
+                voteNum: 10,
                 isSelect: false
               }
             ],
@@ -409,6 +453,9 @@ export default {
         }, 500)
       })
     })
+    // setTimeout(() => {
+    //   this.voteList.destroyed()
+    // }, 5000)
   }
 }
 </script>
